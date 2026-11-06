@@ -1,0 +1,174 @@
+@import url('/public/fonts/fonts.css');
+
+/* ==========================================================================
+   DESIGN TOKENS — VỊ NHÀ MÌNH
+   Ẩm thực miền Tây & Nam Bộ
+   Bảng màu: đất nung, lá chuối, vàng nghệ, nền giấy gạo
+   ========================================================================== */
+
+:root {
+  /* ——— FONT FAMILIES ——— */
+  /* Heading: Lora (cổ điển, ấm cúng, hỗ trợ tiếng Việt trọn vẹn, không lỗi dấu); Body: Be Vietnam Pro */
+  --font-heading: 'Lora', 'Be Vietnam Pro', Georgia, serif;
+  --font-body:    'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Alias giữ tương thích code cũ */
+  --font-family: var(--font-body);
+
+  /* ——— BẢNG MÀU CHỦ ĐẠO: VỊ NHÀ MÌNH (CINEMATIC & MIỀN TÂY SANG TRỌNG) ——— */
+  /* Cam đất (#B94A2B) — màu nhấn chính */
+  --color-primary:          #B94A2B;
+  --color-primary-hover:    #9E3B1F;
+  --color-primary-light:    rgba(185, 74, 43, 0.14);
+  --color-primary-contrast: #FFFFFF;
+
+  /* Xanh lá chuối / lá vườn miền Tây */
+  --color-secondary:        #3F6B3A;
+  --color-secondary-hover:  #2F5530;
+  --color-secondary-light:  #E3EEDD;
+
+  /* Vàng đồng (#D6A34A) */
+  --color-accent:           #D6A34A;
+  --color-accent-hover:     #BF8E38;
+  --color-accent-light:     rgba(214, 163, 74, 0.16);
+
+  /* Nền Kem (#F5EBDD) & Trắng ngà (#FFFDF8) */
+  --color-bg:               #F5EBDD; /* Màu kem ấm cúng truyền thống */
+  --color-surface:          #FFFDF8; /* Màu trắng ngà cao cấp */
+  --color-surface-hover:    #EFE3D2;
+  --color-surface-alt:      #EDE0CD;
+
+  /* Chữ: Nâu đậm (#352219) & biến thể */
+  --color-text-main:        #352219; /* Nâu đậm sang trọng */
+  --color-text-muted:       #6B5546; /* Nâu ấm trung tính */
+  --color-text-light:       #8A7363; /* Gợi ý, chú thích */
+
+  /* Viền: Nâu nhạt */
+  --color-border:           #E2D5C3;
+  --color-border-focus:     #B94A2B;
+
+  /* Cinematic Hero Tokens (Áp dụng cho Hero Section tông tối cinematic) */
+  --hero-bg-dark:           #17130F; /* Đen than */
+  --hero-bg-deeper:         #120E0B;
+  --hero-surface-dark:      #231B15;
+  --hero-text-bright:       #FFFDF8; /* Trắng ngà */
+  --hero-text-muted:        #D8CBBF;
+  --hero-gold:              #D6A34A; /* Vàng đồng */
+  --hero-terracotta:        #B94A2B; /* Cam đất */
+  --hero-glow-gold:         rgba(214, 163, 74, 0.28);
+  --hero-glow-orange:       rgba(185, 74, 43, 0.32);
+
+  /* Trạng thái */
+  --color-success:          #2E7D32;
+  --color-success-bg:       #E8F5E9;
+  --color-warning:          #D6A34A;
+  --color-warning-bg:       #FDF3D8;
+  --color-danger:           #C62828;
+  --color-danger-bg:        #FFEBEE;
+  --color-info:             #1565C0;
+  --color-info-bg:          #E3F2FD;
+
+  /* ——— TYPE SCALE (fluid) ——— */
+  --text-xs:   0.8125rem;  /* 13px */
+  --text-sm:   0.9375rem;  /* 15px */
+  --text-md:   1rem;       /* 16px */
+  --text-lg:   clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+  --text-xl:   clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  --text-2xl:  clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+  --text-hero: clamp(2.25rem, 1.5rem + 4vw, 4rem);
+
+  /* ——— SPACING (base 4px) ——— */
+  --space-1:  0.25rem;  /* 4px */
+  --space-2:  0.5rem;   /* 8px */
+  --space-3:  0.75rem;  /* 12px */
+  --space-4:  1rem;     /* 16px */
+  --space-5:  1.25rem;  /* 20px */
+  --space-6:  1.5rem;   /* 24px */
+  --space-8:  2rem;     /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+
+  /* ——— BORDER RADIUS ——— */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-full: 9999px;
+
+  /* ——— SHADOWS (Elevations) ——— */
+  --shadow-sm: 0 1px 3px rgba(43, 29, 20, 0.07), 0 1px 2px rgba(43, 29, 20, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(43, 29, 20, 0.09), 0 2px 4px -2px rgba(43, 29, 20, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(43, 29, 20, 0.09), 0 4px 6px -4px rgba(43, 29, 20, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(43, 29, 20, 0.11), 0 8px 10px -6px rgba(43, 29, 20, 0.06);
+  --shadow-glow: 0 0 20px rgba(181, 71, 42, 0.22);
+
+  /* ——— MOTION TOKENS ——— */
+  /* Easing curves — theo chuẩn Master Prompt & review-animations */
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);     /* nút, card hover, modal vào */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);    /* di chuyển trên màn hình */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);     /* drawer/bottom sheet */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* đàn hồi nảy nhẹ */
+  /* KHÔNG dùng ease-in cho UI (cấm theo spec) */
+
+  /* Duration quy chuẩn: Nhanh 150-200ms | Thường 250-450ms | Phức tạp 500-800ms */
+  --dur-fast:    180ms;  /* 150–200ms: nút nhấn, chip, switch */
+  --dur-normal:  320ms;  /* 250–450ms: hover, card, tab transition */
+  --dur-slow:    650ms;  /* 500–800ms: hero reveal, drawer, stagger */
+  --dur-press:   160ms;  /* nút nhấn, chip */
+  --dur-popover: 200ms;  /* tooltip, dropdown nhỏ */
+  --dur-modal:   250ms;  /* modal, dialog */
+  --dur-drawer:  400ms;  /* drawer, bottom sheet */
+
+  /* Alias giữ tương thích */
+  --transition-fast:   150ms var(--ease-out);
+  --transition-normal: 250ms var(--ease-out);
+  --transition-slow:   400ms var(--ease-drawer);
+
+  /* ——— LAYOUT ——— */
+  --container-max-width: 1240px;
+  --header-height:       68px;
+}
+
+/* ——— DARK MODE — tông đen than & nâu đậm cinematic ——— */
+[data-theme="dark"] {
+  --color-primary:          #D66648; /* Cam đất sáng hơn trên nền tối */
+  --color-primary-hover:    #B94A2B;
+  --color-primary-light:    rgba(185, 74, 43, 0.22);
+  --color-primary-contrast: #FFFFFF;
+
+  --color-secondary:        #5A9154;
+  --color-secondary-hover:  #3F6B3A;
+  --color-secondary-light:  rgba(63, 107, 58, 0.2);
+
+  --color-accent:           #D6A34A; /* Vàng đồng */
+  --color-accent-hover:     #E5B55E;
+  --color-accent-light:     rgba(214, 163, 74, 0.2);
+
+  --color-bg:               #17130F; /* Đen than */
+  --color-surface:          #231B15; /* Nâu đậm bề mặt thẻ */
+  --color-surface-hover:    #2C221B;
+  --color-surface-alt:      #1D1712;
+
+  --color-text-main:        #FFFDF8; /* Trắng ngà */
+  --color-text-muted:       #C4B5A5;
+  --color-text-light:       #8F7E70;
+
+  --color-border:           #3B2C21;
+  --color-border-focus:     #D66648;
+
+  --color-success:          #66BB6A;
+  --color-success-bg:       rgba(102, 187, 106, 0.15);
+  --color-warning:          #D6A34A;
+  --color-warning-bg:       rgba(214, 163, 74, 0.18);
+  --color-danger:           #EF5350;
+  --color-danger-bg:        rgba(239, 83, 80, 0.15);
+  --color-info:             #42A5F5;
+  --color-info-bg:          rgba(66, 165, 245, 0.15);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 20px 35px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 25px rgba(214, 163, 74, 0.25);
+}

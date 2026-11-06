@@ -1,0 +1,28 @@
+Thể loại món,Tên món,Giá tiền(đơn vị trăm nghìn vnd),Mô tả,Link ảnh /tên ảnh,Dị ứng(Nếu có),Độ cay(nếu có),Ghi chú
+Món phụ,Nghêu hấp sả ớt,"1,5","Nghêu Bến Tre hấp cùng sả, ớt, gừng, lá chanh. Nước hấp ngọt thanh, chấm bánh mì rất ngon.",ngheu-hap-sa-ot.jpg,Hải sản (nhuyễn thể),Cay nhẹ,"Nghêu Bến Tre, Tiền Giang."
+Món phụ,Gỏi ngó sen tôm thịt,"1,6","Ngó sen giòn trộn tôm, thịt luộc, rau thơm, đậu phộng rang, nước mắm chua ngọt.",goi-ngo-sen-tom-thit.jpg,"Hải sản (tôm), đậu phộng",Cay nhẹ,Món truyền thống Đồng Tháp.
+Món phụ,Gỏi cuốn tôm thịt,"0,8","Bánh tráng cuốn tôm, thịt luộc, bún, rau thơm, chấm tương hoặc mắm nêm. Thanh mát, nhẹ bụng.",goi-cuon-tom-thit.jpg,"Hải sản (tôm), đậu phộng (tương)",Không cay,Phần 2 cuốn.
+Món phụ,Chạo tôm bọc mía nướng,"1,5","Tôm xay quấn quanh cây mía nướng thơm, ăn cuốn bánh tráng, rau sống, chấm mắm nêm.",chao-tom-boc-mia-nuong.jpg,"Hải sản (tôm), đậu phộng",Không cay,"Món truyền thống Huế, được ưa chuộng ở miền Nam."
+Món phụ,Khô cá sặc rằn nướng mắm me,"1,4","Khô cá sặc rằn nướng nóng, xé nhỏ, chấm mắm me chua ngọt cay. Dai thơm, rất đưa cơm.",kho-ca-sac-ran-nuong-mam-me.jpg,Cá,Cay nhẹ,"Đặc sản An Giang, Đồng Tháp."
+Món chính,Cá lóc nướng trui,"2,8","Cá lóc đồng nướng nguyên con vùi rơm, da cháy thơm, thịt ngọt. Cuốn bánh tráng, rau sống, chấm mắm me.",ca-loc-nuong-trui.jpg,Cá,Cay nhẹ,"Món 2–3 người. Đặc sản Đồng Tháp, Cần Thơ."
+Món chính,Cá kèo kho tộ nước dừa,"1,8","Cá kèo Bạc Liêu kho tộ với nước dừa tươi, tiêu, ớt, nước kho sệt béo thơm. Đưa cơm.",ca-keo-kho-to-nuoc-dua.jpg,"Cá, dừa",Cay nhẹ,Đặc sản Bạc Liêu.
+Món chính,Cá tai tượng chiên xù,"3,5","Cá tai tượng chiên giòn xòe như bông, ăn cuốn bánh tráng, rau, chuối chát, chấm mắm me.",ca-tai-tuong-chien-xu.jpg,"Cá, gluten",Cay nhẹ,Món 3–4 người.
+Món chính,Tôm nướng muối ớt,"3,8","Tôm càng xanh to nướng than, phết muối ớt, thịt dai ngọt, gạch béo.",tom-cang-xanh-nuong-muoi-ot.jpg,Hải sản (tôm),Cay vừa,"Tôm càng Cà Mau, Bến Tre."
+Món chính,Vịt nấu chao,"2,8","Vịt ta om với chao, nước cốt dừa, sả, thịt mềm đậm, vị béo thơm. Ăn cùng bún hoặc cơm.",vit-nau-chao.jpg,"Đậu nành (chao), dừa",Cay nhẹ,Món truyền thống miền Tây.
+Món chính,Thịt kho tộ nước dừa hột vịt,"1,8","Thịt ba chỉ kho tộ với nước dừa tươi, trứng vịt, thịt mềm béo, nước kho sánh ngọt.",thit-kho-to-nuoc-dua-hot-vit.jpg,"Trứng, dừa",Không cay,Món cơm gia đình miền Nam.
+Món chính,Bò nướng lá lốt than hoa,"2,0","Bò xay cuốn lá lốt nướng than, thơm nức. Cuốn bánh tráng, rau sống, chấm mắm nêm.",bo-nuong-la-lot-than-hoa.jpg,"Đậu phộng, hải sản (mắm)",Không cay,Phần 6 cuốn.
+Món chính,Cơm tấm sườn bì chả,"1,4","Cơm tấm Sài Gòn với sườn nướng, bì, chả trứng, mỡ hành, nước mắm chua ngọt.",com-tam-suon-bi-cha.jpg,"Trứng, cá (nước mắm)",Không cay,Món đặc trưng Sài Gòn.
+Món chính,Bánh xèo miền Tây củ hũ dừa,"1,6","Bánh xèo lớn, vàng giòn nhân tôm, thịt, củ hũ dừa. Cuốn rau rừng, chấm nước mắm chua ngọt.",banh-xeo-mien-tay-cu-hu-dua.jpg,"Hải sản (tôm), cá (nước mắm)",Cay nhẹ,Món đặc trưng miền Tây.
+Món chính,Bánh khọt Vũng Tàu,"1,5","Bánh khọt nhỏ giòn rụm, nhân tôm, nước cốt dừa, hành lá, cuốn rau thơm chấm nước mắm.",banh-khot-vung-tau.jpg,"Hải sản (tôm), dừa",Không cay,Phần 6 bánh.
+Món nước,Hủ tiếu Nam Vang,"1,2","Nước dùng ngọt xương, hủ tiếu dai, tôm, thịt bằm, gan, trứng cút. Món sáng kinh điển.",hu-tieu-nam-vang.jpg,"Hải sản (tôm), gluten",Không cay,Phục vụ nước dùng riêng khi mang đi.
+Món nước,Bún mắm Sóc Trăng,"1,6","Nước dùng mắm cá linh đậm vị, bún, tôm, mực, thịt quay, cà tím.",bun-mam-soc-trang.jpg,"Cá, tôm, mực",Cay nhẹ,"Món đặc trưng Sóc Trăng, Cần Thơ."
+Món nước,Canh chua cá lóc,"1,8","Canh chua cá lóc, bông súng, bạc hà, đậu bắp, cà chua, vị chua ngọt đặc trưng.",canh-chua-ca-loc-bong-sung.jpg,Cá,Cay nhẹ,Món miền Tây.
+Món nước,Bò kho bánh mì,"1,5","Bò kho mềm, sả, quế, hồi, nước sốt đậm đà, ăn cùng bánh mì.",bo-kho-banh-mi.jpg,"Gluten, đậu nành",Cay nhẹ,Món Sài Gòn.
+Tráng miệng,Chè bưởi Bến Tre,"0,5","Chè bưởi tép, nước cốt dừa, đậu xanh, vị thanh mát.",che-buoi-ben-tre.jpg,"Dừa, đậu xanh",Không cay,Bến Tre.
+Tráng miệng,Chè chuối nướng nước cốt dừa,"0,6","Chuối nướng bọc nếp, rưới nước cốt dừa béo, đậu phộng rang.",che-chuoi-nuong-nuoc-cot-dua.jpg,"Dừa, đậu phộng",Không cay,Món Sài Gòn.
+Tráng miệng,Chè bà ba,"0,5","Khoai lang, nếp, đậu, nước cốt dừa, vị ngọt dịu.",che-ba-ba.jpg,Dừa,Không cay,Món truyền thống Nam Bộ.
+Tráng miệng,Bánh da lợn lá dứa,"0,4","Bánh nhiều lớp, dẻo, thơm lá dứa, đậu xanh.",banh-da-lon-la-dua.jpg,Đậu xanh,Không cay,Bánh truyền thống.
+Thức uống,Nước dừa xiêm Bến Tre,"0,4","Dừa xiêm tươi, ngọt thanh, mát lạnh.",nuoc-dua-xiem-ben-tre.jpg,Dừa,Không cay,Phục vụ trong trái.
+Thức uống,Nước mía tắc Sài Gòn,"0,3","Nước mía ép tươi, thêm tắc, vị chua ngọt mát lạnh.",nuoc-mia-tac-sai-gon.jpg,Không,Không cay,Phục vụ lạnh.
+Thức uống,Cà phê sữa đá,"0,3","Cà phê pha phin đậm đà, sữa đặc, đá lạnh.",ca-phe-sua-da.jpg,Sữa,Không cay,Đậm kiểu Sài Gòn.
+Thức uống,Rượu đế Gò Đen,"1,5","Rượu đế truyền thống Long An, thơm nồng, hợp món nhậu.",ruou-de-go-den.jpg,Không,Không cay,Chỉ phục vụ khách trên 18 tuổi.

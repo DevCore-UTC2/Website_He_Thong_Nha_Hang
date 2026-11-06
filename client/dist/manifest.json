@@ -1,0 +1,13 @@
+{
+  "name": "Vị Nhà Mình",
+  "version": "2.0.0",
+  "buildTime": "2026-11-06T16:46:14.502Z",
+  "files": {
+    "styles.css": "assets/styles.75ae9d25.min.css",
+    "main.js": "assets/main.81ae262c.min.js"
+  },
+  "hashes": {
+    "css": "75ae9d25",
+    "js": "81ae262c"
+  }
+}

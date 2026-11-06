@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+.tools/
+
+# Environment & OS files
+.env
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+*.bak
+
+
+# Database (Tùy chọn: nếu muốn giữ database mẫu ban đầu có thể giữ, nhưng thường không bắt buộc hoặc dùng seedData để tự sinh)
+# server/restaurant.sqlite
