@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tra Cứu Hóa Đơn Điện Tử — Vị Nhà Mình</title>
+  <link rel="icon" type="image/png" href="/public/icons/logo.png">
+  <link rel="stylesheet" href="/src/styles/tokens.css">
+  <link rel="stylesheet" href="/src/styles/base.css">
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: var(--color-text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    .lookup-header {
+      background: white;
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .lookup-container {
+      max-width: min(640px, 94vw);
+      margin: 24px auto;
+      padding: 0 16px;
+      flex: 1;
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .lookup-card {
+      background: white;
+      border-radius: var(--radius-xl, 16px);
+      padding: 28px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+      border: 1px solid var(--color-border);
+      max-width: 100%;
+      max-height: calc(100vh - 140px);
+      max-height: calc(100dvh - 140px);
+      overflow-y: auto;
+      box-sizing: border-box;
+      scrollbar-width: thin;
+    }
+
+    @media (max-width: 640px) {
+      .lookup-container {
+        margin: 12px auto;
+        padding: 0 8px;
+        max-width: 96vw;
+      }
+      .lookup-card {
+        padding: 20px 14px;
+        max-height: calc(100vh - 110px);
+        max-height: calc(100dvh - 110px);
+      }
+      .result-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+    }
+
+    .lookup-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lookup-desc {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .result-card {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: var(--radius-lg, 12px);
+      background: var(--color-surface-alt, #fff7ed);
+      border: 1px solid rgba(181, 71, 42, 0.2);
+      display: none;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0;
+      font-size: 0.9rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="lookup-header">
+    <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+      <span style="font-size: 1.5rem;">🍲</span>
+      <strong style="font-size: 1.15rem; color: var(--color-primary);">Vị Nhà Mình</strong>
+    </a>
+    <a href="/" class="btn btn-secondary btn-sm">← Về trang chủ</a>
+  </header>
+
+  <main class="lookup-container">
+    <div class="lookup-card">
+      <h1 class="lookup-title">
+        <span>🧾</span> Cổng Tra Cứu Hóa Đơn Điện Tử
+      </h1>
+      <p class="lookup-desc">
+        Tra cứu hóa đơn giá trị gia tăng điện tử theo Nghị định 123/2020/NĐ-CP được phát hành tự động cho đơn hàng tại Nhà hàng <strong>Vị Nhà Mình</strong>.
+      </p>
+
+      <form id="form-lookup">
+        <div class="form-group">
+          <label class="form-label" for="lookup-order-code">Mã đơn hàng (*):</label>
+          <input 
+            type="text" 
+            id="lookup-order-code" 
+            class="input" 
+            placeholder="Ví dụ: ORD-1001" 
+            required 
+            style="text-transform: uppercase;"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lookup-phone">4 số cuối số điện thoại đặt hàng (*):</label>
+          <input 
+            type="text" 
+            id="lookup-phone" 
+            class="input" 
+            placeholder="Ví dụ: 5678" 
+            maxlength="4" 
+            pattern="\d{4}" 
+            inputmode="numeric" 
+            required 
+          />
+          <span style="font-size: 0.775rem; color: var(--color-text-muted); margin-top: 4px; display: block;">
+            Nhập 4 số cuối của số điện thoại dùng để đặt hàng nhằm xác minh bảo mật.
+          </span>
+        </div>
+
+        <button type="submit" id="btn-submit-lookup" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 8px;">
+          🔍 Tra Cứu Hóa Đơn
+        </button>
+      </form>
+
+      <!-- Kết quả tra cứu -->
+      <div id="lookup-result" class="result-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(181, 71, 42, 0.3); padding-bottom: 10px;">
+          <div>
+            <div style="font-size: 0.8rem; color: #64748b;">Số hóa đơn:</div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: var(--color-primary);" id="res-inv-num">00000001</div>
+          </div>
+          <span style="background: #dcfce7; color: #16a34a; font-weight: 700; font-size: 0.8rem; padding: 4px 10px; border-radius: 999px;">
+            ✓ Đã phát hành
+          </span>
+        </div>
+
+        <div class="result-grid">
+          <div>
+            <span style="color: #64748b;">Mẫu số / Ký hiệu:</span>
+            <div style="font-weight: 600;" id="res-serial">1 - C26MDM</div>
+          </div>
+          <div>
+            <span style="color: #64748b;">Mã đơn hàng:</span>
+            <div style="font-weight: 600;" id="res-order-code">ORD-0000</div>
+          </div>
+          <div>
+            <span style="color: #64748b;">Người mua / Đơn vị:</span>
+            <div style="font-weight: 600;" id="res-buyer">Khách hàng</div>
+          </div>
+          <div>
+            <span style="color: #64748b;">Tổng tiền thanh toán:</span>
+            <div style="font-weight: 800; color: var(--color-primary);" id="res-amount">0 đ</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <a id="btn-view-invoice" href="#" class="btn btn-primary" style="width: 100%; text-decoration: none; text-align: center; justify-content: center;">
+            📄 Xem Chi Tiết & In Hóa Đơn (Bản Thể Hiện)
+          </a>
+        </div>
+      </div>
+
+      <!-- Lỗi không tìm thấy -->
+      <div id="lookup-error" style="display: none; margin-top: 20px; padding: 14px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: #b91c1c; font-size: 0.9rem;">
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <p>Hệ thống Hóa đơn điện tử khởi tạo từ máy tính tiền — Nhà hàng <strong>Vị Nhà Mình</strong></p>
+      <p style="font-size: 0.8rem; color: #94a3b8;">Lưu ý: Mọi hóa đơn có watermark DEMO phục vụ mục đích kiểm thử và học thuật.</p>
+    </div>
+  </main>
+
+  <script type="module">
+    import { formatCurrency } from '/src/utils/format.js';
+
+    const form = document.getElementById('form-lookup');
+    const orderInput = document.getElementById('lookup-order-code');
+    const phoneInput = document.getElementById('lookup-phone');
+    const btnSubmit = document.getElementById('btn-submit-lookup');
+    const resultBox = document.getElementById('lookup-result');
+    const errorBox = document.getElementById('lookup-error');
+
+    // Tự động điền nếu có query params
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('code')) {
+      orderInput.value = params.get('code');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = orderInput.value.trim().toUpperCase();
+      const phone = phoneInput.value.trim();
+
+      resultBox.style.display = 'none';
+      errorBox.style.display = 'none';
+
+      try {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Đang tra cứu...';
+
+        const res = await fetch(`/api/invoices/lookup?order_code=${encodeURIComponent(code)}&phone_last4=${encodeURIComponent(phone)}`);
+        const json = await res.json();
+
+        if (!json.success || !json.data) {
+          throw new Error(json.message || 'Không tìm thấy hóa đơn.');
+        }
+
+        const inv = json.data;
+        document.getElementById('res-inv-num').textContent = inv.formatted_number || String(inv.invoice_number).padStart(8, '0');
+        document.getElementById('res-serial').textContent = `${inv.template_code || '1'} - ${inv.serial_code || 'C26MDM'}`;
+        document.getElementById('res-order-code').textContent = inv.order_code;
+        document.getElementById('res-buyer').textContent = inv.buyer_company_name || inv.buyer_name || 'Khách hàng';
+        document.getElementById('res-amount').textContent = formatCurrency(inv.total_amount);
+
+        document.getElementById('btn-view-invoice').href = `/hoa-don.html?code=${encodeURIComponent(inv.order_code)}&phone=${encodeURIComponent(phone)}`;
+
+        resultBox.style.display = 'block';
+      } catch (err) {
+        errorBox.textContent = `⚠️ ${err.message}`;
+        errorBox.style.display = 'block';
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = '🔍 Tra Cứu Hóa Đơn';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Vị Nhà Mình – Ẩm thực miền Tây &amp; Nam Bộ</title>
+  <meta name="description" content="Nhà hàng Vị Nhà Mình – Hương vị cơm nhà miền Tây đậm đà. Đặt món tại bàn, đặt bàn trước, tích điểm thành viên." />
+  <meta name="theme-color" content="#B5472A" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Vị Nhà Mình – Ẩm thực miền Tây &amp; Nam Bộ" />
+  <meta property="og:description" content="Cơm nhà miền Tây, đậm vị quê mình. Đặt món tại bàn qua QR, đặt bàn trước, tích điểm thành viên." />
+  <meta property="og:type" content="restaurant" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/public/icons/logo.png" type="image/png" />
+
+  <!-- Self-hosted Fonts: Lora (heading) + Be Vietnam Pro (body) tự host đầy đủ tiếng Việt -->
+  <link rel="preload" href="/public/fonts/be-vietnam-pro-400-0.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/public/fonts/lora-700-29.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/public/fonts/fonts.css" />
+
+  <!-- Preload Hero Centerpiece Image cho LCP tối ưu -->
+  <link rel="preload" as="image" href="/public/images/hero/hero-dish-1.jpg" fetchpriority="high" />
+
+  <!-- Socket.IO Client (phục vụ bởi Express, không cần CDN ngoài) -->
+  <script src="/socket.io/socket.io.js" defer></script>
+
+  <!-- CSS Production Bundle -->
+  <link rel="stylesheet" href="/dist/assets/styles.75ae9d25.min.css" />
+
+  <style>
+    /* ——— Skip link a11y ——— */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--color-primary);
+      color: #ffffff;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      z-index: 9999;
+    }
+    .skip-link:focus { left: var(--space-2); }
+
+    /* ——— Cinematic Header (Tối giản, trong suốt ở đỉnh trang, frosted glass mờ khi cuộn) ——— */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: clip;
+      background: rgba(23, 19, 15, 0.76);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(214, 163, 74, 0.16);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      transition: background-color var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+    }
+    .site-header.scrolled {
+      background: rgba(23, 19, 15, 0.94);
+      border-bottom-color: rgba(214, 163, 74, 0.32);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+    .site-header__inner {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: clamp(6px, 1.2vw, var(--space-3));
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 0 var(--space-4);
+    }
+
+    /* ——— Brand logo ——— */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      text-decoration: none;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .brand__logo {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .brand__text { line-height: 1.15; }
+    .brand__name {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 1.28rem;
+      font-weight: 700;
+      color: #FFFDF8;
+      letter-spacing: -0.01em;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .brand__tagline {
+      display: block;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #D6A34A;
+      letter-spacing: 0.12em;
+    }
+
+    /* ——— Desktop nav ——— */
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(4px, 0.9vw, var(--space-3));
+      font-weight: 600;
+      font-size: clamp(0.82rem, 0.9vw, 0.92rem);
+      min-width: 0;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .desktop-nav::-webkit-scrollbar {
+      display: none;
+    }
+    .desktop-nav a,
+    .desktop-nav .btn {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .desktop-nav a {
+      color: #FFFDF8;
+      transition: color var(--transition-fast);
+      padding: 6px 4px;
+    }
+    .desktop-nav a:hover {
+      color: #D6A34A;
+    }
+    .desktop-nav .btn-outline {
+      border: 1px solid rgba(214, 163, 74, 0.45);
+      color: #FFFDF8;
+      background: rgba(255, 255, 255, 0.05);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      padding: 5px clamp(8px, 0.8vw, 14px);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+    .desktop-nav .btn-outline:hover {
+      background: rgba(214, 163, 74, 0.18);
+      border-color: #D6A34A;
+      color: #FFFDF8;
+    }
+
+    /* ——— Header actions ——— */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-shrink: 0;
+    }
+    .header-actions .btn-icon {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(214, 163, 74, 0.3);
+      color: #FFFDF8;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+    }
+    .header-actions .btn-icon:hover {
+      background: rgba(214, 163, 74, 0.2);
+      border-color: #D6A34A;
+      transform: translateY(-2px);
+    }
+    /* ——— Hamburger button (Header action) ——— */
+    #btn-toggle-sidebar,
+    .hamburger-btn {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      border: 1px solid rgba(214, 163, 74, 0.3) !important;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFDF8;
+      cursor: pointer;
+      flex-shrink: 0;
+      vertical-align: middle;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+    }
+    #btn-toggle-sidebar:hover,
+    .hamburger-btn:hover {
+      background: rgba(214, 163, 74, 0.2);
+      border-color: #D6A34A !important;
+      transform: translateY(-2px);
+    }
+    #btn-toggle-sidebar:active,
+    .hamburger-btn:active {
+      transform: translateY(0);
+    }
+    #btn-toggle-sidebar:focus-visible,
+    .hamburger-btn:focus-visible {
+      outline: 2px solid #D6A34A !important;
+      outline-offset: 2px !important;
+      border-color: #D6A34A !important;
+    }
+    #btn-toggle-sidebar:focus:not(:focus-visible),
+    .hamburger-btn:focus:not(:focus-visible) {
+      outline: none !important;
+    }
+    .cart-btn-wrap {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      min-width: 20px;
+      text-align: center;
+      background: #B94A2B;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ——— Open/Close status pill ——— */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: 1px solid transparent;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+    .status-pill--open  {
+      background: rgba(46, 125, 50, 0.2);
+      color: #81C784;
+      border-color: rgba(129, 199, 132, 0.4);
+    }
+    .status-pill--close {
+      background: rgba(198, 40, 40, 0.2);
+      color: #E57373;
+      border-color: rgba(229, 115, 115, 0.4);
+    }
+    .status-pill__dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    /* ——— Auth button header ——— */
+    #auth-header-container .btn {
+      border: 1px solid rgba(214, 163, 74, 0.45);
+      color: #FFFDF8;
+      background: rgba(255, 255, 255, 0.06);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      border-radius: var(--radius-full);
+      transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+    #auth-header-container .btn:hover {
+      background: rgba(214, 163, 74, 0.22);
+      border-color: #D6A34A;
+      color: #FFFDF8;
+    }
+
+    /* ——— HERO CINEMATIC (Phong cách Immersive Food Photography & Editorial Typography) ——— */
+    .hero {
+      position: relative;
+      background-color: #17130F;
+      background-image:
+        radial-gradient(ellipse 650px 520px at 72% 38%, rgba(185, 74, 43, 0.26) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 480px at 85% 75%, rgba(214, 163, 74, 0.22) 0%, transparent 68%),
+        radial-gradient(ellipse 450px 450px at 18% 28%, rgba(214, 163, 74, 0.08) 0%, transparent 65%);
+      color: #FFFDF8;
+      padding: calc(var(--space-12) + 12px) 0 calc(var(--space-12) + 28px);
+      overflow: hidden;
+      border-bottom: none;
+    }
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1.15fr;
+      gap: var(--space-8);
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .hero__badges-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-3);
+    }
+    .hero__eyebrow {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #D6A34A;
+      padding: 5px 12px;
+      background: rgba(214, 163, 74, 0.12);
+      border: 1px solid rgba(214, 163, 74, 0.35);
+      border-radius: var(--radius-full);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .hero__season-badge {
+      background: rgba(46, 125, 50, 0.22) !important;
+      border: 1px solid rgba(102, 187, 106, 0.45) !important;
+      color: #A5D6A7 !important;
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+    .hero__season-badge:hover {
+      background: rgba(46, 125, 50, 0.35) !important;
+      border-color: rgba(102, 187, 106, 0.7) !important;
+    }
+    .hero__heading {
+      font-family: var(--font-heading);
+      font-size: clamp(2.4rem, 4.6vw, 3.85rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: var(--space-4);
+      color: #FFFDF8;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+    }
+    .hero__heading-italic {
+      font-style: italic;
+      font-weight: 600;
+      color: #D6A34A;
+      background: linear-gradient(135deg, #FFFDF8 0%, #E8B95F 45%, #D6A34A 70%, #B94A2B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      filter: drop-shadow(0 2px 14px rgba(214, 163, 74, 0.3));
+    }
+    .hero__sub {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: var(--space-6);
+      max-width: 530px;
+      color: #D8CBBF;
+    }
+    .hero__ctas {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-8);
+    }
+    .btn-hero-primary {
+      background: linear-gradient(135deg, #B94A2B 0%, #D6A34A 100%);
+      color: #FFFFFF !important;
+      border: none;
+      box-shadow: 0 8px 24px rgba(185, 74, 43, 0.45);
+      font-weight: 700;
+      padding: 0.9rem 1.85rem;
+      border-radius: var(--radius-full);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(214, 163, 74, 0.5);
+    }
+    .btn-hero-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFDF8 !important;
+      border: 1.5px solid rgba(214, 163, 74, 0.45);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      font-weight: 600;
+      padding: 0.9rem 1.75rem;
+      border-radius: var(--radius-full);
+      transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-hero-secondary:hover {
+      transform: translateY(-2px);
+      background: rgba(214, 163, 74, 0.16);
+      border-color: #D6A34A;
+      color: #FFFDF8;
+    }
+
+    /* ——— Specs Bar (Giống cảm hứng thiết kế Ảnh 1) ——— */
+    .hero__specs-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+      padding-top: var(--space-4);
+      border-top: 1px solid rgba(214, 163, 74, 0.2);
+      max-width: 530px;
+    }
+    .hero__spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .hero__spec-val {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #D6A34A;
+      line-height: 1;
+    }
+    .hero__spec-lbl {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #E2D5C3;
+      line-height: 1.25;
+    }
+    .hero__spec-lbl small {
+      display: block;
+      font-size: 0.68rem;
+      text-transform: none;
+      color: #A99B8E;
+      font-weight: 400;
+    }
+    .hero__spec-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(214, 163, 74, 0.25);
+    }
+
+    /* ——— HERO ART STAGE: Bố cục 4 ảnh món ăn nghệ thuật, đa tầng, có chiều sâu ——— */
+    .hero__art-stage {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      height: 520px;
+      min-height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero__glow-halo {
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(214, 163, 74, 0.22) 0%, rgba(185, 74, 43, 0.16) 50%, transparent 70%);
+      filter: blur(45px);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-dish {
+      position: absolute;
+      overflow: hidden;
+      transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+    }
+
+    /* Món 1: Cá chiên giòn thảo mộc (Centerpiece chính) */
+    .hero-dish--main {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 370px;
+      height: 370px;
+      border-radius: 40px 100px 50px 110px / 60px 80px 70px 90px;
+      border: 1.5px solid rgba(214, 163, 74, 0.45);
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.85), 0 0 50px rgba(214, 163, 74, 0.2);
+      z-index: 2;
+    }
+    .hero-dish--main .hero-dish__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.6s var(--ease-out);
+    }
+    .hero-dish--main:hover .hero-dish__img {
+      transform: scale(1.05);
+    }
+
+    /* Món 2: Cơm tôm lá chuối (Góc trên phải) */
+    .hero-dish--tr {
+      top: 10px;
+      right: -10px;
+      width: 185px;
+      height: 185px;
+      border-radius: 56px 20px 56px 20px;
+      border: 1.5px solid rgba(214, 163, 74, 0.4);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75), 0 0 30px rgba(185, 74, 43, 0.25);
+      z-index: 3;
+      animation: heroFloat1 6.8s ease-in-out infinite alternate;
+    }
+    .hero-dish--tr .hero-dish__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+    .hero-dish--tr:hover .hero-dish__img {
+      transform: scale(1.06);
+    }
+
+    /* Món 3: Tôm tái chanh nan hoa (Đĩa tròn đè góc dưới trái) */
+    .hero-dish--bl {
+      bottom: 25px;
+      left: 10px;
+      width: 175px;
+      height: 175px;
+      border-radius: 50%;
+      border: 2px solid rgba(214, 163, 74, 0.55);
+      box-shadow: 0 20px 42px rgba(0, 0, 0, 0.8), 0 0 35px rgba(214, 163, 74, 0.3);
+      z-index: 4;
+      animation: heroFloat2 7.6s ease-in-out 0.8s infinite alternate;
+    }
+    .hero-dish--bl .hero-dish__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+    .hero-dish--bl:hover .hero-dish__img {
+      transform: scale(1.06);
+    }
+
+    /* Món 4: Cơm chiên hoàng kim vòm (Góc dưới phải) */
+    .hero-dish--br {
+      bottom: 20px;
+      right: 15px;
+      width: 165px;
+      height: 165px;
+      border-radius: 28px 28px 46px 46px;
+      border: 1.5px solid rgba(214, 163, 74, 0.4);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.72), 0 0 25px rgba(214, 163, 74, 0.2);
+      z-index: 3;
+      animation: heroFloat3 6.2s ease-in-out 0.4s infinite alternate;
+    }
+    .hero-dish--br .hero-dish__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+    }
+    .hero-dish--br:hover .hero-dish__img {
+      transform: scale(1.06);
+    }
+
+    /* Thẻ tên món nổi trên ảnh */
+    .hero-dish__tag {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      padding: 5px 9px;
+      background: rgba(23, 19, 15, 0.86);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(214, 163, 74, 0.32);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      pointer-events: none;
+    }
+    .hero-dish__tag-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #FFFDF8;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hero-dish__tag-sub {
+      font-size: 0.64rem;
+      color: #D6A34A;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Badge Bếp realtime nổi ở trung tâm bên dưới */
+    .hero__badge-float {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: var(--space-3) var(--space-5);
+      background: rgba(23, 19, 15, 0.92);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(214, 163, 74, 0.45);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      z-index: 5;
+      white-space: nowrap;
+    }
+    .hero__badge-float-icon { color: #D6A34A; font-size: 1.25rem; }
+    .hero__badge-float-title {
+      font-weight: 800;
+      font-size: 0.94rem;
+      color: #FFFDF8;
+    }
+    .hero__badge-float-sub {
+      font-size: 0.76rem;
+      color: #D8CBBF;
+    }
+
+    /* Hiệu ứng chuyển động lơ lửng cinematic */
+    @keyframes heroFloat1 {
+      0%   { transform: translateY(0px) rotate(3deg); }
+      100% { transform: translateY(-10px) rotate(4.5deg); }
+    }
+    @keyframes heroFloat2 {
+      0%   { transform: translateY(0px) rotate(-2deg); }
+      100% { transform: translateY(-8px) rotate(-0.5deg); }
+    }
+    @keyframes heroFloat3 {
+      0%   { transform: translateY(0px) rotate(1deg); }
+      100% { transform: translateY(-9px) rotate(-1deg); }
+    }
+
+    /* Đường cong chuyển tiếp mềm mại từ Hero nền tối sang phần Thực đơn màu kem */
+    .hero-bottom-curve {
+      position: absolute;
+      bottom: 0;
+      margin-bottom: -1px;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 48px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Badge Bán Chạy: Nền đỏ chữ trắng nổi bật chống chìm */
+    .badge-banchay {
+      background-color: #D32F2F !important;
+      color: #FFFFFF !important;
+      font-weight: 700 !important;
+      font-size: 0.72rem !important;
+      padding: 3px 8px !important;
+      border-radius: var(--radius-full) !important;
+      letter-spacing: 0.04em !important;
+      box-shadow: 0 2px 6px rgba(211, 47, 47, 0.35) !important;
+      border: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 2px !important;
+    }
+
+    /* ——— Menu section ——— */
+    .menu-section {
+      padding: var(--space-12) 0 var(--space-10);
+      background-color: var(--color-bg);
+      position: relative;
+    }
+    .section-header { text-align: center; margin-bottom: var(--space-8); }
+    .section-header h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--color-text-main);
+    }
+    .section-header p {
+      max-width: 580px;
+      margin: var(--space-2) auto 0;
+      color: var(--color-text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* ——— Footer Cinematic & Ấm cúng ——— */
+    .site-footer {
+      background-color: #17130F;
+      color: #D8CBBF;
+      padding: var(--space-12) 0 var(--space-6);
+      border-top: 1px solid rgba(214, 163, 74, 0.2);
+    }
+    .site-footer__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-8);
+      margin-bottom: var(--space-8);
+    }
+    .footer-brand__name {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: #FFFDF8;
+      margin-bottom: var(--space-2);
+      display: block;
+    }
+    .footer-brand__desc {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #B09880;
+    }
+    .footer-col h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+      color: #D6A34A;
+      letter-spacing: 0.04em;
+    }
+    .footer-col p, .footer-col address {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      font-style: normal;
+      color: #D8CBBF;
+    }
+    .footer-col a {
+      color: #FFFDF8;
+      transition: color var(--transition-fast);
+    }
+    .footer-col a:hover {
+      color: #D6A34A;
+    }
+    .site-footer__bottom {
+      border-top: 1px solid rgba(214, 163, 74, 0.15);
+      padding-top: var(--space-6);
+      text-align: center;
+      font-size: 0.85rem;
+      color: #8F7E70;
+    }
+    .footer-disclaimer {
+      margin-top: var(--space-2);
+      font-size: 0.78rem;
+      color: #7A6555;
+    }
+
+    /* ——— Mobile bottom bar ——— */
+    .mobile-bottom-bar {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      box-shadow: var(--shadow-lg);
+      z-index: 90;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .mobile-bottom-bar__inner {
+      display: flex;
+      align-items: stretch;
+      height: 56px;
+    }
+    .mobile-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      position: relative;
+      transition: color var(--transition-fast);
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .mobile-nav-item:hover, .mobile-nav-item:focus-visible {
+      color: var(--color-primary);
+    }
+    .mobile-nav-item svg { width: 20px; height: 20px; }
+    .mobile-cart-badge {
+      position: absolute;
+      top: 4px;
+      right: calc(50% - 18px);
+      font-size: 0.65rem;
+      padding: 1px 5px;
+    }
+
+    @media (max-width: 1024px) {
+      .hero__grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+      }
+      .hero__art-stage {
+        max-width: 480px;
+        height: 450px;
+        margin: 0 auto;
+      }
+      .hero-dish--main {
+        width: 310px;
+        height: 310px;
+      }
+      .hero-dish--tr {
+        width: 155px;
+        height: 155px;
+        top: 15px;
+        right: 10px;
+      }
+      .hero-dish--bl {
+        width: 145px;
+        height: 145px;
+        bottom: 25px;
+        left: 15px;
+      }
+      .hero-dish--br {
+        width: 140px;
+        height: 140px;
+        bottom: 20px;
+        right: 15px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-bottom-bar { display: block; }
+      body { padding-bottom: calc(64px + 16px + env(safe-area-inset-bottom, 0px)); }
+      .desktop-nav { display: none; }
+      .hero {
+        padding: calc(var(--space-8) + 12px) 0 var(--space-10);
+      }
+      .hero__heading {
+        font-size: clamp(2rem, 6.2vw, 2.5rem);
+      }
+      .hero__specs-bar {
+        gap: var(--space-3);
+      }
+      .hero__spec-val {
+        font-size: 1.15rem;
+      }
+      .hero__spec-lbl {
+        font-size: 0.66rem;
+      }
+      .hero__art-stage {
+        height: 380px;
+        min-height: 340px;
+        margin-top: var(--space-4);
+      }
+      .hero-dish--main {
+        width: 260px;
+        height: 260px;
+      }
+      .hero-dish--tr {
+        width: 130px;
+        height: 130px;
+        top: 0px;
+        right: 0px;
+      }
+      .hero-dish--bl {
+        width: 120px;
+        height: 120px;
+        bottom: 25px;
+        left: 0px;
+      }
+      .hero-dish--br {
+        width: 115px;
+        height: 115px;
+        bottom: 20px;
+        right: 0px;
+      }
+      .hero__badge-float {
+        padding: 8px 16px;
+        bottom: -10px;
+        max-width: calc(100vw - 32px);
+      }
+      .hero__badge-float-title {
+        font-size: 0.85rem;
+      }
+      .hero__badge-float-sub {
+        font-size: 0.7rem;
+      }
+    }
+    @media (min-width: 769px) {
+      .desktop-nav { display: flex; }
+      .mobile-bottom-bar { display: none; }
+    }
+
+    @media (max-width: 360px) {
+      .brand__logo { width: 28px; height: 28px; }
+      .brand__name { font-size: 0.9rem; }
+      .hero { padding: calc(var(--space-6) + 4px) 0 var(--space-8); }
+      .hero__heading { font-size: 1.65rem; }
+      .hero__ctas { flex-direction: column; width: 100%; gap: 8px; }
+      .btn-hero-primary, .btn-hero-secondary { width: 100%; text-align: center; justify-content: center; }
+      .hero__art-stage { height: 270px; min-height: 250px; max-width: 280px; }
+      .hero-dish--main { width: 180px; height: 180px; }
+      .hero-dish--tr { width: 85px; height: 85px; top: 0; right: 0; }
+      .hero-dish--bl { width: 80px; height: 80px; bottom: 10px; left: 0; }
+      .hero-dish--br { width: 75px; height: 75px; bottom: 5px; right: 0; }
+      .hero__badge-float { display: none; }
+    }
+
+    @media (max-width: 932px) and (orientation: landscape), (max-height: 540px) and (orientation: landscape) {
+      body { padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px)) !important; }
+      .site-header { height: 48px; }
+      .site-header__inner { height: 48px; }
+      .hero { padding: 14px 0 20px; }
+      .hero__grid { grid-template-columns: 1fr 1fr; gap: var(--space-4); align-items: center; }
+      .hero__heading { font-size: 1.55rem; margin-bottom: 6px; }
+      .hero__sub { font-size: 0.82rem; margin-bottom: 10px; }
+      .hero__ctas { margin-bottom: 10px; gap: 8px; }
+      .btn-hero-primary, .btn-hero-secondary { padding: 0.6rem 1.15rem; font-size: 0.82rem; }
+      .hero__specs-bar { display: none; }
+      .hero__art-stage { height: 230px; min-height: 210px; max-width: 300px; }
+      .hero-dish--main { width: 160px; height: 160px; }
+      .hero-dish--tr { width: 80px; height: 80px; }
+      .hero-dish--bl { width: 75px; height: 75px; }
+      .hero-dish--br { width: 70px; height: 70px; }
+      .hero__badge-float { display: none; }
+      .mobile-bottom-bar { height: 44px; }
+      .mobile-nav-item span:not(.mobile-cart-badge) { display: none; }
+      .mobile-nav-item { padding: 4px 0; min-height: 40px; }
+    }
+
+    /* ——— BRAND PAGE LOADER (Phong cách nhà hàng cao cấp Vị Nhà Mình) ——— */
+    .page-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #14100D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1), visibility 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .page-loader--hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .page-loader__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: var(--space-6);
+      max-width: 380px;
+    }
+    .page-loader__logo-wrap {
+      position: relative;
+      margin-bottom: var(--space-4);
+    }
+    .page-loader__logo {
+      width: 76px;
+      height: 76px;
+      border-radius: var(--radius-md);
+      object-fit: contain;
+      filter: drop-shadow(0 0 20px rgba(214, 163, 74, 0.45));
+      animation: loaderLogoPulse 1.8s ease-in-out infinite;
+    }
+    .page-loader__title {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #FFFDF8;
+      letter-spacing: -0.01em;
+      margin-bottom: 2px;
+    }
+    .page-loader__sub {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #D6A34A;
+      letter-spacing: 0.14em;
+      margin-bottom: var(--space-5);
+    }
+    .page-loader__bar-track {
+      width: 170px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: var(--space-3);
+    }
+    .page-loader__bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #B94A2B, #D6A34A, #FFFDF8);
+      border-radius: 999px;
+      animation: loaderBarFill 0.55s ease-out forwards;
+    }
+    .page-loader__quote {
+      font-size: 0.75rem;
+      color: #B09880;
+      font-style: italic;
+    }
+
+    @keyframes loaderLogoPulse {
+      0%, 100% { transform: scale(0.96); }
+      50% { transform: scale(1.03); filter: drop-shadow(0 0 26px rgba(214, 163, 74, 0.65)); }
+    }
+    @keyframes loaderBarFill {
+      0% { width: 0%; }
+      60% { width: 75%; }
+      100% { width: 100%; }
+    }
+
+    /* ——— HERO ENTRANCE STAGGER SEQUENCING ——— */
+    body.hero-ready .site-header {
+      animation: headerSlideDown 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+    }
+    body.hero-ready .hero__badges-row {
+      animation: heroElemFadeUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) 0.08s both;
+    }
+    body.hero-ready .hero__heading {
+      animation: heroElemFadeUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.18s both;
+    }
+    body.hero-ready .hero__sub {
+      animation: heroElemFadeUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.3s both;
+    }
+    body.hero-ready .hero__ctas {
+      animation: heroElemFadeUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.42s both;
+    }
+    body.hero-ready .hero__specs-bar {
+      animation: heroElemFadeUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.52s both;
+    }
+    body.hero-ready .hero-dish--main {
+      animation: heroMainScaleIn 0.75s cubic-bezier(0.23, 1, 0.32, 1) 0.12s both;
+    }
+    body.hero-ready .hero-dish--tr {
+      animation: heroTrEnter 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.28s both, heroFloat1 6.8s ease-in-out 1s infinite alternate;
+    }
+    body.hero-ready .hero-dish--bl {
+      animation: heroBlEnter 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.42s both, heroFloat2 7.6s ease-in-out 1.2s infinite alternate;
+    }
+    body.hero-ready .hero-dish--br {
+      animation: heroBrEnter 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.56s both, heroFloat3 6.2s ease-in-out 1.3s infinite alternate;
+    }
+
+    @keyframes headerSlideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes heroElemFadeUp {
+      from { transform: translateY(22px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes heroMainScaleIn {
+      from { transform: translate(-50%, -50%) scale(0.92); opacity: 0; }
+      to   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    @keyframes heroTrEnter {
+      from { transform: translateY(20px) scale(0.94); opacity: 0; }
+      to   { transform: translateY(0) scale(1) rotate(3deg); opacity: 1; }
+    }
+    @keyframes heroBlEnter {
+      from { transform: translateY(20px) scale(0.94); opacity: 0; }
+      to   { transform: translateY(0) scale(1) rotate(-2deg); opacity: 1; }
+    }
+    @keyframes heroBrEnter {
+      from { transform: translateY(20px) scale(0.94); opacity: 0; }
+      to   { transform: translateY(0) scale(1) rotate(1deg); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-dish--tr,
+      .hero-dish--bl,
+      .hero-dish--br,
+      .page-loader__logo,
+      .page-loader__bar-fill,
+      body.hero-ready .site-header,
+      body.hero-ready .hero__badges-row,
+      body.hero-ready .hero__heading,
+      body.hero-ready .hero__sub,
+      body.hero-ready .hero__ctas,
+      body.hero-ready .hero__specs-bar,
+      body.hero-ready .hero-dish--main,
+      body.hero-ready .hero-dish--tr,
+      body.hero-ready .hero-dish--bl,
+      body.hero-ready .hero-dish--br {
+        animation: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+      .page-loader {
+        display: none !important;
+      }
+    }
+
+    /* Tối ưu hiệu suất Mobile (LCP & First Paint ngay lập tức không bị overlay chặn) */
+    @media (max-width: 768px) {
+      .page-loader {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="hero-ready">
+
+  <!-- ==================== BRAND PAGE LOADER ==================== -->
+  <div id="app-page-loader" class="page-loader" aria-hidden="true">
+    <div class="page-loader__content">
+      <div class="page-loader__logo-wrap">
+        <img
+          src="/public/icons/logo.png"
+          alt="Logo Vị Nhà Mình"
+          class="page-loader__logo"
+          width="76"
+          height="76"
+        />
+      </div>
+      <div class="page-loader__title">Vị Nhà Mình</div>
+      <div class="page-loader__sub">Ẩm thực miền Tây &amp; Nam Bộ</div>
+      <div class="page-loader__bar-track">
+        <div class="page-loader__bar-fill"></div>
+      </div>
+      <span class="page-loader__quote">Đang chuẩn bị không gian ẩm thực...</span>
+    </div>
+  </div>
+  <script>
+    (function() {
+      function dismissEarly() {
+        document.body.classList.add('hero-ready');
+        var l = document.getElementById('app-page-loader');
+        if (l && !l.classList.contains('page-loader--hidden')) {
+          l.classList.add('page-loader--hidden');
+          setTimeout(function() { if (l && l.parentNode) l.remove(); }, 350);
+        }
+      }
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        dismissEarly();
+      } else {
+        window.addEventListener('DOMContentLoaded', dismissEarly);
+      }
+      setTimeout(dismissEarly, 400);
+    })();
+  </script>
+
+  <!-- Skip link cho screen readers -->
+  <a href="#menu-section" class="skip-link">Bỏ qua tới nội dung chính</a>
+
+  <!-- Scroll Progress Indicator (Master Prompt Phần 9) -->
+  <div id="scroll-progress-bar" class="scroll-progress-bar" aria-hidden="true"></div>
+
+  <!-- Interactive Custom Cursor (Master Prompt Phần 2) -->
+  <div id="custom-cursor-dot" class="custom-cursor-dot" aria-hidden="true"></div>
+  <div id="custom-cursor-ring" class="custom-cursor-ring" aria-hidden="true">
+    <span class="cursor-label">Xem món</span>
+  </div>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header" role="banner">
+    <div class="container site-header__inner">
+
+      <!-- Thương hiệu -->
+      <a href="/" class="brand" aria-label="Vị Nhà Mình – Trang chủ">
+        <img
+          src="/public/icons/logo.png"
+          alt="Logo Vị Nhà Mình"
+          class="brand__logo"
+          width="40" height="40"
+        />
+        <div class="brand__text">
+          <span class="brand__name">Vị Nhà Mình</span>
+          <span class="brand__tagline">Ẩm thực miền Tây &amp; Nam Bộ</span>
+        </div>
+      </a>
+
+      <!-- Nav Desktop (Dùng chung cho mọi role) -->
+      <nav class="desktop-nav" aria-label="Menu chính">
+        <a href="#menu-section">Thực Đơn</a>
+        <button id="btn-open-family-meal" class="btn btn-sm btn-outline" style="border-radius: var(--radius-full); font-weight: 600;">
+          Mâm Cơm Gia Đình
+        </button>
+        <button id="btn-nav-tables" class="btn btn-sm btn-outline" style="border-radius: var(--radius-full);" title="Xem sơ đồ bàn ăn và mã QR gọi món">
+          Sơ Đồ Bàn &amp; QR
+        </button>
+        <a href="/tra-cuu-hoa-don.html">Tra Cứu Hóa Đơn</a>
+        <button id="btn-open-reservation" class="btn btn-sm btn-outline" style="border-radius: var(--radius-full);">
+          Đặt Bàn / Tiệc
+        </button>
+        <button id="btn-header-order-status" class="btn btn-sm btn-outline" style="border-radius: var(--radius-full);" title="Xem trạng thái tiến trình đơn hàng gần nhất">
+          Theo Dõi Đơn
+        </button>
+      </nav>
+
+      <!-- Header actions -->
+      <div class="header-actions">
+        <!-- Trạng thái mở/đóng cửa -->
+        <span id="open-status-pill" class="status-pill" role="status" aria-live="polite"></span>
+
+        <!-- Chuyển theme sáng/tối -->
+        <button id="btn-theme-toggle" class="btn-icon" title="Chuyển chế độ sáng/tối" aria-label="Chuyển chế độ sáng/tối">
+          <span id="theme-icon" aria-hidden="true"></span>
+        </button>
+
+        <!-- Giỏ hàng -->
+        <div class="cart-btn-wrap">
+          <button id="btn-open-cart" class="btn btn-secondary btn-icon" title="Xem giỏ hàng" aria-label="Giỏ hàng">
+            <span id="cart-icon-header" aria-hidden="true"></span>
+          </button>
+          <span
+            id="header-cart-badge"
+            class="badge badge-amber cart-badge"
+            aria-label="Số món trong giỏ"
+            style="display:none;"
+          >0</span>
+        </div>
+
+        <!-- Tài khoản người dùng (chỉ hiển thị badge vai trò khi đã login) -->
+        <div id="auth-header-container">
+          <button id="btn-open-auth" class="btn btn-outline btn-sm">
+            <span id="auth-icon-header" aria-hidden="true"></span>
+            Đăng Nhập
+          </button>
+        </div>
+
+        <!-- Nút Menu Hamburger mở Sidebar biến đổi mượt sang X (Master Prompt Phần 4) -->
+        <button id="btn-toggle-sidebar" class="btn-icon hamburger-btn" title="Menu điều hướng & tác vụ" aria-label="Menu điều hướng & tác vụ">
+          <span class="hamburger-box" aria-hidden="true">
+            <span class="hamburger-inner"></span>
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================== SIDEBAR & OVERLAY (Task 4) ==================== -->
+  <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+  <div id="app-sidebar" class="app-sidebar" role="dialog" aria-modal="true" aria-label="Menu điều hướng và tác vụ" aria-hidden="true" inert>
+    <div class="sidebar-header">
+      <div class="flex items-center gap-2">
+        <img src="/public/icons/logo.png" alt="Logo Vị Nhà Mình" width="32" height="32" style="border-radius: var(--radius-sm); object-fit: contain;" />
+        <div>
+          <div class="sidebar-title">Vị Nhà Mình</div>
+          <div class="sidebar-sub">Ẩm thực miền Tây &amp; Nam Bộ</div>
+        </div>
+      </div>
+      <button id="btn-close-sidebar" class="btn-icon" title="Đóng menu" aria-label="Đóng menu">&times;</button>
+    </div>
+
+    <!-- Thông tin người dùng -->
+    <div id="sidebar-user-card" class="sidebar-user-card"></div>
+
+    <!-- Danh sách liên kết điều hướng -->
+    <nav class="sidebar-nav" id="sidebar-nav" aria-label="Menu sidebar"></nav>
+
+    <!-- Footer sidebar (Đăng xuất) -->
+    <div class="sidebar-footer" id="sidebar-footer"></div>
+  </div>
+
+  <!-- ==================== HERO SECTION (Cinematic Food Photography & Editorial Typography) ==================== -->
+  <section class="hero" aria-label="Giới thiệu nhà hàng Vị Nhà Mình">
+    <div class="container">
+      <div class="hero__grid">
+
+        <!-- Cột trái: Editorial Typography & Call to Actions -->
+        <div>
+          <div class="hero__badges-row">
+            <span class="hero__eyebrow">Nhà hàng ẩm thực miền Nam</span>
+            <span id="hero-season-badge" class="badge hero__season-badge" role="button" tabindex="0" title="Xem món đặc sản đang vào mùa rộ nhất">
+              🌱 Đang vào mùa vụ: Cá linh &amp; Điên điển
+            </span>
+          </div>
+
+          <h1 class="hero__heading">
+            Cơm nhà miền Tây,<br>
+            <em class="hero__heading-italic">đậm vị quê mình.</em>
+          </h1>
+
+          <p class="hero__sub">
+            Thực đơn hơn 90 món đặc sản miền Tây &amp; Nam Bộ. Gọi món tại bàn bằng QR,
+            đặt bàn trước, tích điểm thành viên — phục vụ tận tình từ sáng đến tối.
+          </p>
+
+          <div class="hero__ctas">
+            <button id="btn-hero-menu" class="btn btn-hero-primary btn-lg">
+              <span>Xem Thực Đơn &amp; Gọi Món</span>
+              <span aria-hidden="true">&rarr;</span>
+            </button>
+            <button id="btn-hero-reserve" class="btn btn-hero-secondary btn-lg">
+              <span>Đặt Bàn Trước</span>
+            </button>
+          </div>
+
+          <!-- Specs Bar phong cách editorial cao cấp giống thiết kế tham khảo -->
+          <div class="hero__specs-bar">
+            <div class="hero__spec-item">
+              <span class="hero__spec-val">90+</span>
+              <span class="hero__spec-lbl">MÓN ĐẶC SẢN<br><small>Hương vị sông nước</small></span>
+            </div>
+            <div class="hero__spec-divider" aria-hidden="true"></div>
+            <div class="hero__spec-item">
+              <span class="hero__spec-val">09h–21h30</span>
+              <span class="hero__spec-lbl">GIỜ PHỤC VỤ<br><small>Gọi món tại bàn QR</small></span>
+            </div>
+            <div class="hero__spec-divider" aria-hidden="true"></div>
+            <div class="hero__spec-item">
+              <span class="hero__spec-val">100%</span>
+              <span class="hero__spec-lbl">BẾP NÓNG HỔI<br><small>Chế biến khi gọi</small></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột phải: Bố cục 4 ảnh món ăn nghệ thuật, đa tầng, có chiều sâu thị giác -->
+        <div class="hero__art-stage">
+          <!-- Hào quang ánh sáng hổ phách/vàng đồng sau đĩa món ăn -->
+          <div class="hero__glow-halo" aria-hidden="true"></div>
+
+          <!-- Món 1: Cá chiên giòn lá lốt (Centerpiece đĩa chính nền than xám) -->
+          <div class="hero-dish hero-dish--main">
+            <img
+              src="/public/images/hero/hero-dish-1.jpg"
+              alt="Cá chiên giòn sốt thảo mộc Vị Nhà Mình"
+              class="hero-dish__img"
+              width="620"
+              height="440"
+              fetchpriority="high"
+              loading="eager"
+              decoding="async"
+            />
+            <div class="hero-dish__tag">
+              <span class="hero-dish__tag-title">Cá Chiên Giòn Thảo Mộc</span>
+              <span class="hero-dish__tag-sub">Lá lốt · Sốt gỏi đặc sản sông nước</span>
+            </div>
+          </div>
+
+          <!-- Món 2: Cơm tôm lá chuối (Góc trên phải đan xen) -->
+          <div class="hero-dish hero-dish--tr">
+            <img
+              src="/public/images/hero/hero-dish-2.jpg"
+              alt="Cơm tôm xào lá chuối Nam Bộ"
+              class="hero-dish__img"
+              width="260"
+              height="260"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="hero-dish__tag">
+              <span class="hero-dish__tag-title">Cơm Tôm Lá Chuối</span>
+              <span class="hero-dish__tag-sub">Đậm vị cơm nhà</span>
+            </div>
+          </div>
+
+          <!-- Món 3: Tôm tái chanh nan hoa (Đĩa tròn lơ lửng đè góc dưới trái) -->
+          <div class="hero-dish hero-dish--bl">
+            <img
+              src="/public/images/hero/hero-dish-3.jpg"
+              alt="Tôm tái chanh sốt cay hoa nan"
+              class="hero-dish__img"
+              width="240"
+              height="240"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="hero-dish__tag">
+              <span class="hero-dish__tag-title">Tôm Tái Sốt Cay</span>
+              <span class="hero-dish__tag-sub">Chua cay thanh mát</span>
+            </div>
+          </div>
+
+          <!-- Món 4: Cơm chiên hoàng kim vòm (Góc dưới phải) -->
+          <div class="hero-dish hero-dish--br">
+            <img
+              src="/public/images/hero/hero-dish-4.jpg"
+              alt="Cơm chiên hoàng kim đặc sản"
+              class="hero-dish__img"
+              width="230"
+              height="230"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="hero-dish__tag">
+              <span class="hero-dish__tag-title">Cơm Chiên Hoàng Kim</span>
+              <span class="hero-dish__tag-sub">Gạo thơm bùi giòn</span>
+            </div>
+          </div>
+
+          <!-- Thẻ Bếp thời gian thực giữ nguyên icon và id lightning-icon -->
+          <div class="hero__badge-float">
+            <span class="hero__badge-float-icon" aria-hidden="true" id="lightning-icon"></span>
+            <div>
+              <div class="hero__badge-float-title">Đặt món &amp; ra bếp ngay</div>
+              <div class="hero__badge-float-sub">Phiếu bếp thời gian thực · Giờ nhận đơn 09:00 – 21:30</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Đường cong mềm mại chuyển tiếp mượt mà từ Hero nền tối sang phần Thực đơn màu kem -->
+    <div class="hero-bottom-curve" aria-hidden="true">
+      <svg viewBox="0 0 1440 48" fill="none" preserveAspectRatio="none" style="display:block;width:100%;height:48px;">
+        <path d="M0,0 C320,40 420,48 720,48 C1020,48 1120,40 1440,0 L1440,48 L0,48 Z" fill="var(--color-bg)"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ==================== MENU SECTION ==================== -->
+  <main id="menu-section" class="menu-section" tabindex="-1">
+    <div class="container">
+      <!-- Banner Mâm Cơm Gia Đình Nam Bộ (T28) -->
+      <div id="family-meal-banner-container"></div>
+
+      <div class="section-header">
+        <span class="badge badge-amber" style="margin-bottom: var(--space-2);">Thực đơn đặc sản</span>
+        <h2>Món Ăn Vị Nhà Mình</h2>
+        <p>Hơn 90 món đặc sản miền Tây &amp; Nam Bộ, được chế biến từ nguyên liệu tươi ngon mỗi ngày.</p>
+      </div>
+      <div id="menu-container"></div>
+    </div>
+  </main>
+
+  <!-- ==================== SƠ ĐỒ BÀN ĂN & MÃ QR GỌI MÓN (Mục lớn cho Khách hàng & Đặt bàn từ xa) ==================== -->
+  <section id="table-map-section" class="table-map-section" aria-label="Sơ đồ bàn ăn và mã QR gọi món tại bàn" style="padding: var(--space-12) 0; background-color: var(--color-surface-alt); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+    <div class="container">
+      <div class="section-header text-center" style="text-align: center; margin-bottom: var(--space-8);">
+        <span class="badge badge-amber" style="margin-bottom: var(--space-2);">Trải Nghiệm Tại Bàn &amp; Đặt Bàn Từ Xa</span>
+        <h2 style="font-family: var(--font-heading); font-size: clamp(1.8rem, 3.2vw, 2.4rem); color: var(--color-text); margin-bottom: var(--space-2);">Sơ Đồ Bàn Ăn &amp; Mã QR Gọi Món</h2>
+        <p style="max-width: 680px; margin: 0 auto; color: var(--color-text-muted); font-size: 0.95rem;">
+          Theo dõi tình trạng bàn theo thời gian thực. Quý khách chỉ cần xem mã bàn, số bàn và bấm <strong>Đặt Bàn Từ Xa</strong> để giữ chỗ trước nhanh chóng!
+        </p>
+      </div>
+
+      <div id="table-map-section-container"></div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer id="contact-section" class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="site-footer__grid">
+
+        <!-- Thương hiệu -->
+        <div>
+          <span class="footer-brand__name">Vị Nhà Mình</span>
+          <p class="footer-brand__desc">
+            Nhà hàng ẩm thực miền Tây &amp; Nam Bộ — hương vị cơm nhà, phục vụ tận tình.
+            <br><em style="font-size:0.82rem;color:var(--color-text-light);">Website đồ án học tập – dữ liệu DEMO</em>
+          </p>
+        </div>
+
+        <!-- Giờ phục vụ -->
+        <div class="footer-col">
+          <h3>Giờ Phục Vụ</h3>
+          <p>
+            Thứ Hai – Chủ Nhật: <strong>09:00 – 22:00</strong><br>
+            Đặt bàn trước muộn nhất lúc 21:00.<br>
+            Gọi món tại bàn qua mã QR.
+          </p>
+        </div>
+
+        <!-- Liên hệ -->
+        <div class="footer-col">
+          <h3>Liên Hệ</h3>
+          <address>
+            <span id="footer-location-icon" aria-hidden="true"></span>
+            450 Lê Văn Việt, P. Tăng Nhơn Phú, TP. Thủ Đức, TP. HCM<br>
+            <span id="footer-phone-icon" aria-hidden="true"></span>
+            <a href="tel:0900000000">0900 000 000</a> <em style="font-size:0.8em;">(DEMO)</em><br>
+            <span id="footer-email-icon" aria-hidden="true"></span>
+            <a href="mailto:lienhe@vinhaminh.vn">lienhe@vinhaminh.vn</a> <em style="font-size:0.8em;">(DEMO)</em>
+          </address>
+        </div>
+
+        <!-- Tiện ích & Pháp lý -->
+        <div class="footer-col">
+          <h3>Tra Cứu &amp; Pháp Lý</h3>
+          <p>
+            <a href="/tra-cuu-hoa-don.html" style="text-decoration: none;">🧾 Tra cứu hóa đơn VAT</a><br>
+            <a href="/chinh-sach-bao-mat.html" style="text-decoration: none;">🔒 Chính sách bảo mật (NĐ 13)</a>
+          </p>
+        </div>
+
+      </div>
+
+      <div class="site-footer__bottom">
+        <p>© 2026 Vị Nhà Mình. Mã nguồn thuộc nhóm đồ án — chưa phát hành thương mại.</p>
+        <p class="footer-disclaimer">
+          Website mang tính học thuật. Thông tin người bán, MST và số điện thoại là dữ liệu DEMO, không phải thông tin pháp lý thật.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MOBILE BOTTOM BAR ==================== -->
+  <div class="mobile-bottom-bar" role="navigation" aria-label="Điều hướng nhanh">
+    <div class="mobile-bottom-bar__inner">
+
+      <a href="#menu-section" id="btn-mobile-menu" class="mobile-nav-item">
+        <span id="mobile-food-icon" aria-hidden="true"></span>
+        <span>Thực đơn</span>
+      </a>
+
+      <button id="btn-mobile-reserve" class="mobile-nav-item">
+        <span id="mobile-calendar-icon" aria-hidden="true"></span>
+        <span>Đặt bàn</span>
+      </button>
+
+      <button id="btn-mobile-kitchen" class="mobile-nav-item staff-only" style="display:none;">
+        <span id="mobile-kitchen-icon" aria-hidden="true"></span>
+        <span>Bếp</span>
+      </button>
+
+      <button id="btn-mobile-tables" class="mobile-nav-item staff-only" style="display:none;">
+        <span id="mobile-tables-icon" aria-hidden="true"></span>
+        <span>Sơ đồ bàn</span>
+      </button>
+
+      <button id="btn-mobile-admin" class="mobile-nav-item admin-only" style="display:none;">
+        <span id="mobile-settings-icon" aria-hidden="true"></span>
+        <span>Quản trị</span>
+      </button>
+
+      <button id="btn-mobile-cart" class="mobile-nav-item">
+        <span id="mobile-cart-icon" aria-hidden="true"></span>
+        <span>Giỏ hàng</span>
+        <span id="mobile-cart-badge" class="badge badge-amber mobile-cart-badge" style="display:none;">0</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Main JavaScript App -->
+  <script type="module" src="/dist/assets/main.81ae262c.min.js"></script>
+
+</body>
+</html>

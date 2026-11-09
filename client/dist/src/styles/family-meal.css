@@ -1,0 +1,499 @@
+/**
+ * STYLES CHO TÍNH NĂNG MÂM CƠM GIA ĐÌNH — VỊ NHÀ MÌNH
+ * 
+ * Tuân thủ nghiêm ngặt:
+ * - 6 Breakpoint Responsive: 360, 390, 768, 1024, 1280, 1536px (T26)
+ * - 10 Tiêu chuẩn Motion & Animation: không transition all, không co phóng về 0 (T27)
+ * - Tap target >= 44x44px theo WCAG 2.5.5
+ */
+
+/* ——— Modal mâm cơm gia đình ——— */
+.family-meal-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: var(--space-4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-normal) var(--ease-out), visibility var(--dur-normal) var(--ease-out);
+}
+
+.family-meal-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.family-meal-modal__dialog {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  width: 100%;
+  max-width: 960px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  transform: translateY(24px) scale(0.98);
+  transition: transform var(--dur-normal) var(--ease-out);
+}
+
+.family-meal-modal.is-open .family-meal-modal__dialog {
+  transform: translateY(0) scale(1);
+}
+
+/* ——— Mobile Bottom Sheet (<= 640px) ——— */
+@media (max-width: 640px) {
+  .family-meal-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .family-meal-modal__dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    max-height: 88vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    transform: translateY(100%);
+    transition: transform var(--dur-normal) var(--ease-drawer);
+  }
+  .family-meal-modal.is-open .family-meal-modal__dialog {
+    transform: translateY(0);
+  }
+  .family-meal-modal__dialog::before {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 5px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-border);
+    margin: 10px auto 4px;
+  }
+  .family-meal-header,
+  .family-meal-body,
+  .family-meal-footer {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* ——— Tối ưu hóa chế độ xoay ngang (Landscape Mode) ——— */
+@media (max-width: 932px) and (orientation: landscape), (max-height: 540px) and (orientation: landscape) {
+  .family-meal-modal {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px !important;
+  }
+  .family-meal-modal__dialog {
+    width: min(880px, 96vw) !important;
+    max-width: 96vw !important;
+    margin: auto !important;
+    max-height: 94dvh !important;
+    border-radius: var(--radius-lg) !important;
+    transform: none !important;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.4) !important;
+  }
+  .family-meal-modal__dialog::before {
+    display: none !important;
+  }
+  .family-meal-header {
+    padding: 8px 16px !important;
+  }
+  .family-meal-header__title {
+    font-size: 1.15rem !important;
+  }
+  .family-meal-body {
+    grid-template-columns: 1fr 1.15fr !important;
+    gap: 12px !important;
+    padding: 10px 16px !important;
+    max-height: calc(94dvh - 110px) !important;
+  }
+  .tray-svg-wrap {
+    max-width: 210px !important;
+  }
+  .family-meal-footer {
+    padding: 8px 16px !important;
+  }
+}
+
+/* ——— Màn hình siêu nhỏ (<= 360px) ——— */
+@media (max-width: 360px) {
+  .serves-pills {
+    gap: 6px;
+  }
+  .serves-btn {
+    min-width: calc(50% - 6px);
+    flex: 1 1 calc(50% - 6px);
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+  .family-meal-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .family-meal-footer__actions {
+    width: 100%;
+  }
+  .family-meal-footer__actions .btn {
+    flex: 1;
+  }
+}
+
+/* ——— Header ——— */
+.family-meal-header {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background-color: var(--color-surface);
+}
+
+.family-meal-header__title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.family-meal-header__sub {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* ——— Body Grid ——— */
+.family-meal-body {
+  padding: var(--space-4) var(--space-6);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.family-meal-body > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 860px) {
+  .family-meal-body {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* ——— Controls: Chọn số người & Dị ứng ——— */
+.family-meal-controls {
+  margin-bottom: var(--space-4);
+}
+
+.serves-pills {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+}
+
+.serves-btn {
+  flex: 1;
+  min-width: 72px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.serves-btn.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(181, 71, 42, 0.25);
+}
+
+.allergens-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+}
+
+.allergen-chip {
+  min-height: 38px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 1px dashed var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.allergen-chip.is-excluded {
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger);
+  border-style: solid;
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+/* ——— Visual Mâm Tròn SVG ——— */
+.tray-visual-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: radial-gradient(circle at center, rgba(227, 167, 47, 0.08) 0%, transparent 70%);
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+}
+
+.tray-svg-wrap {
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+.tray-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.12));
+}
+
+/* ——— Thẻ danh sách 4 món bên cạnh ——— */
+.meal-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+}
+
+.meal-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.meal-item-card:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.meal-item-card__thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: var(--color-border);
+}
+
+.meal-item-card__info {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.meal-item-card__badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 2px;
+}
+
+.meal-item-card__name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--color-text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
+.meal-item-card__price {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.btn-rotate-dish {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.btn-rotate-dish:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-color: rgba(181, 71, 42, 0.05);
+}
+
+.btn-rotate-dish:active {
+  transform: rotate(45deg);
+}
+
+/* ——— Footer & CTA ——— */
+.family-meal-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.family-meal-footer__summary {
+  display: flex;
+  flex-direction: column;
+}
+
+.family-meal-footer__label {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.family-meal-footer__total {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.family-meal-footer__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ——— Banner Gọi Mâm Cơm trên Trang Chủ ——— */
+.family-meal-banner {
+  background: linear-gradient(135deg, #FFF9F3 0%, #FBF0E4 100%);
+  border: 1px solid rgba(181, 71, 42, 0.2);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  margin-bottom: var(--space-8);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: var(--space-6);
+  box-shadow: 0 4px 16px rgba(181, 71, 42, 0.06);
+}
+
+[data-theme="dark"] .family-meal-banner {
+  background: linear-gradient(135deg, #231B15 0%, #1A140F 100%);
+  border-color: rgba(214, 163, 74, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .family-meal-banner {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .family-meal-banner__actions {
+    justify-content: center;
+  }
+}
+
+.family-meal-banner__title {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  font-size: 1.4rem;
+  margin-bottom: var(--space-2);
+}
+
+.family-meal-banner__desc {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+  line-height: 1.5;
+}
+
+.family-meal-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ——— Prefers Reduced Motion ——— */
+@media (prefers-reduced-motion: reduce) {
+  .family-meal-modal,
+  .family-meal-modal__dialog,
+  .serves-btn,
+  .allergen-chip,
+  .btn-rotate-dish {
+    transition: none !important;
+    animation: none !important;
+  }
+  .btn-rotate-dish:active {
+    transform: none !important;
+  }
+}
