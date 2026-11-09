@@ -1,0 +1,40 @@
+{
+  "name": "vi-nha-minh",
+  "version": "2.0.0",
+  "description": "Vị Nhà Mình — Website nhà hàng ẩm thực miền Tây & Nam Bộ",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node --watch server/app.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
+    "lint": "node scripts/lint.js",
+    "build": "node scripts/build.js",
+    "seed:menu": "node server/seeds/importMenu.js",
+    "reset-db": "node -e \"const fs = require('fs'); if (fs.existsSync('server/restaurant.sqlite')) { fs.unlinkSync('server/restaurant.sqlite'); console.log('Đã reset CSDL thành công!'); } else { console.log('CSDL đã sạch.'); }\""
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead",
+    "not IE 11",
+    "Safari >= 14",
+    "iOS >= 14",
+    "Chrome >= 90",
+    "Edge >= 90"
+  ],
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.3",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.4",
+    "sqlite3": "^6.0.1",
+    "typescript": "^7.0.2"
+  }
+}

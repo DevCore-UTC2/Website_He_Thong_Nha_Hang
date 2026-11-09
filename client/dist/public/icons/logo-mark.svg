@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="Vị Nhà Mình">
+  <!-- Mái nhà + bát cơm -->
+  <path d="M24 8 L40 24 L34 24 L34 40 L14 40 L14 24 L8 24 Z" fill="#B5472A"/>
+  <ellipse cx="24" cy="22" rx="7" ry="3.5" fill="#E3A72F"/>
+  <path d="M17 22 Q24 17 31 22" fill="#FDF3D8" stroke="#E3A72F" stroke-width="1"/>
+  <!-- Khói -->
+  <path d="M21 18 Q20 14 22 11" stroke="#F6E3DA" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <path d="M24 17 Q25 13 24 10" stroke="#F6E3DA" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <path d="M27 18 Q28 14 26 11" stroke="#F6E3DA" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+</svg>

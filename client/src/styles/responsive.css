@@ -1,0 +1,860 @@
+/**
+ * RESPONSIVE STYLESHEET — VỊ NHÀ MÌNH (T26 & MODERN RESPONSIVE SKILL)
+ * Chuẩn hóa 6 breakpoints:
+ *   - 360px  : Điện thoại nhỏ (Galaxy S, Android màn hẹp, iPhone SE 320-360px)
+ *   - 390px  : Điện thoại tiêu chuẩn (iPhone 12/13/14/15/16 Pro)
+ *   - 768px  : Máy tính bảng dọc (iPad Mini, iPad Portrait)
+ *   - 1024px : Máy tính bảng ngang / Laptop nhỏ (iPad Landscape)
+ *   - 1280px : Desktop chuẩn (MacBook, PC tiêu chuẩn)
+ *   - 1536px : Desktop màn hình lớn (Full HD+, 2K, Ultra-wide)
+ *
+ * Nguyên tắc vàng:
+ * 1. Mobile-first & Fluid layout — tuyệt đối KHÔNG có thanh cuộn ngang (scrollWidth <= innerWidth).
+ * 2. Modal trên mobile dọc chuyển thành Bottom Sheet trượt từ đáy lên.
+ * 3. Tối ưu hóa đặc biệt cho thiết bị xoay ngang (Landscape Mode): Dialog gọn, chia 2 cột, không che khuất nút bấm.
+ * 4. Vùng chạm cảm ứng (Tap Target) tối thiểu 44x44px theo WCAG 2.5.5 / 2.5.8.
+ * 5. Font size ô nhập liệu input/select/textarea ≥ 16px chống iOS Safari tự phóng to (auto-zoom).
+ * 6. Bảng dữ liệu quản trị / Hóa đơn / Bếp tự động cuộn ngang trong container riêng.
+ * 7. Hỗ trợ Safe Area Insets cho các thiết bị có tai thỏ, nốt ruồi và viền bo cong.
+ */
+
+/* ==================== 0. CHỐNG CUỘN NGANG & TỐI ƯU CẢM ỨNG ==================== */
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Safe Area Insets cơ bản cho toàn trang */
+body {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Đảm bảo hình ảnh và iframe không vượt quá chiều rộng màn hình */
+img, svg, picture, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tự động xuống dòng cho chuỗi văn bản dài, URL không chọc thủng khung */
+h1, h2, h3, h4, h5, h6, p, span, a, label, li, td, th {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Vùng chạm cảm ứng (Tap Target) tối thiểu 44x44px (WCAG 2.5.5 / 2.5.8) */
+button,
+.btn,
+.btn-icon,
+.mobile-nav-item,
+.chip,
+.tab-btn,
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  min-height: 44px;
+}
+
+.btn-icon,
+button.btn-icon,
+.mobile-nav-item {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Nút đóng X trong modal có vùng chạm tối thiểu 44x44px */
+.modal-header .btn-icon,
+#btn-close-modal,
+#btn-close-auth,
+#btn-close-checkout,
+#btn-close-tracking,
+#btn-close-reservation,
+#btn-close-kitchen,
+#btn-close-table-map,
+#btn-admin-close {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  font-size: 1.4rem;
+}
+
+/* Tăng kích thước vùng chạm của checkbox & radio */
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: 22px;
+  min-height: 22px;
+  cursor: pointer;
+}
+
+/* Khung cuộn ngang nội bộ cho bảng dữ liệu */
+.table-responsive,
+.table-container,
+.table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  display: block;
+}
+
+/* ==================== 1. DESKTOP MÀN HÌNH LỚN (>= 1536px) ==================== */
+@media (min-width: 1536px) {
+  :root {
+    --container-max-width: 1440px;
+  }
+
+  .container {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+
+  .dish-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: var(--space-6) !important;
+  }
+
+  .hero__heading {
+    font-size: 2.75rem !important;
+  }
+}
+
+/* ==================== 2. DESKTOP TIÊU CHUẨN (1280px - 1535px) ==================== */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  :root {
+    --container-max-width: 1200px;
+  }
+
+  .dish-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: var(--space-6) !important;
+  }
+}
+
+/* ==================== 3. TABLET LANDSCAPE / LAPTOP NHỎ (1024px) ==================== */
+@media (max-width: 1024px) {
+  /* Header điều hướng iPad: giữ nowrap, cuộn ngang mượt không đẩy vỡ header */
+  .desktop-nav {
+    flex-wrap: nowrap !important;
+    gap: var(--space-2) !important;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .desktop-nav .btn {
+    padding: 5px 10px !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* Lưới thực đơn 2 cột trên iPad */
+  .dish-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--space-4) !important;
+  }
+
+  /* Màn hình Bếp (Kanban), Sơ đồ bàn không làm tràn trang */
+  .kanban-grid {
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+  }
+
+  .table-map-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)) !important;
+  }
+
+  .modal-box {
+    max-width: min(92vw, 960px) !important;
+    margin: var(--space-3);
+  }
+}
+
+/* ==================== 4. TABLET PORTRAIT & MOBILE (<= 768px) ==================== */
+@media (max-width: 768px) {
+  /* Chừa khoảng trống chân trang để không bị thanh bottom bar che khuất */
+  body {
+    padding-bottom: calc(64px + 16px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Chống tràn header trên thiết bị mobile */
+  .site-header {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: clip;
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .site-header__inner {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    gap: 8px !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .brand {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+  }
+
+  .brand__logo {
+    width: 34px !important;
+    height: 34px !important;
+    flex-shrink: 0;
+  }
+
+  .brand__name {
+    font-size: 1.1rem !important;
+    white-space: nowrap;
+  }
+
+  .brand__tagline {
+    display: none !important;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px !important;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  #open-status-pill {
+    padding: 3px 6px !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap;
+  }
+
+  #auth-header-container .btn {
+    padding: 6px 10px !important;
+    font-size: 0.82rem !important;
+    white-space: nowrap;
+  }
+
+  /* Ẩn navigation desktop, hiển thị mobile bottom bar */
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-bottom-bar {
+    display: block !important;
+  }
+
+  /* Mobile header: luôn hiển thị nút hamburger mở sidebar chuẩn chạm 44x44px */
+  #btn-toggle-sidebar {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Font size input ≥ 16px: Ngăn iOS Safari tự động zoom trang */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Toast notification */
+  .toast-container {
+    bottom: calc(64px + 12px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 12px !important;
+    right: 12px !important;
+  }
+
+  .toast {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Lưới admin xếp thành 1 cột */
+  .grid-admin-split-2-1,
+  .grid-admin-split-1-2,
+  .grid-3col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==================== 5. MOBILE BOTTOM SHEET (<= 640px) ==================== */
+@media (max-width: 640px) {
+  /* Chuyển toàn bộ Modal thành Bottom Sheet trượt từ đáy màn hình */
+  .modal-backdrop {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  .modal-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 85vh !important;
+    max-height: 85dvh !important;
+    border-radius: 24px 24px 0 0 !important;
+    margin: 0 !important;
+    border-bottom: none !important;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.25) !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  /* Pull Handle indicator ở đỉnh Bottom Sheet */
+  .modal-box::before {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 5px;
+    background-color: var(--color-border);
+    border-radius: 999px;
+    margin: 10px auto 4px;
+    flex-shrink: 0;
+  }
+
+  .modal-backdrop.active .modal-box {
+    transform: translateY(0) !important;
+  }
+
+  .modal-header {
+    padding: 12px 18px !important;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .modal-body {
+    padding: 16px 18px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-footer {
+    padding: 12px 18px max(16px, env(safe-area-inset-bottom, 16px)) !important;
+    flex-wrap: wrap !important;
+    gap: var(--space-2) !important;
+  }
+
+  .modal-footer .btn {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+
+  /* Lưới 2 cột thành 1 cột */
+  .grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero__grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-6) !important;
+  }
+
+  /* Thực đơn 1 cột */
+  .dish-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4) !important;
+  }
+
+  /* Cart Drawer chiếm full chiều rộng màn hình mobile & chống tràn iPhone 16 */
+  .cart-drawer {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .drawer-footer {
+    padding: 12px 14px !important;
+  }
+
+  #btn-checkout {
+    min-width: 0 !important;
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.92rem !important;
+    white-space: normal !important;
+    text-align: center !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Ẩn chữ status-pill trên màn hình hẹp để đảm bảo 100% không mất nút Đăng nhập / Giỏ / Theme */
+  @media (max-width: 520px) {
+    #open-status-pill {
+      display: none !important;
+    }
+  }
+
+  /* Admin modal tabs tự co giãn đều trên mobile (T1.3) */
+  .admin-tabs-nav {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  .admin-tab-btn {
+    flex: 1 1 calc(50% - 8px) !important;
+    min-height: 44px !important;
+    font-size: 0.8rem !important;
+    padding: 6px 8px !important;
+    text-align: center;
+  }
+
+  /* Thanh lọc danh mục cuộn ngang mượt mà, không tràn trang */
+  .category-bar,
+  .category-scroll,
+  .categories-filter {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    padding-bottom: 6px;
+    gap: 8px;
+    scrollbar-width: none;
+    max-width: 100%;
+  }
+
+  .category-bar::-webkit-scrollbar,
+  .category-scroll::-webkit-scrollbar,
+  .categories-filter::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==================== 6. ĐIỆN THOẠI MÀN HÌNH NHỎ (360px & 390px) ==================== */
+@media (max-width: 390px) {
+  .container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* Header trên iPhone 390px & Galaxy 360px */
+  .brand__logo {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .brand__name {
+    font-size: 0.96rem !important;
+  }
+
+  .brand__tagline {
+    display: none !important;
+  }
+
+  .header-actions {
+    gap: 4px !important;
+  }
+
+  .header-actions .btn-icon:not(#btn-toggle-sidebar) {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+  }
+
+  #auth-header-container .badge {
+    padding: 3px 6px !important;
+    font-size: 0.65rem !important;
+  }
+
+  #btn-open-auth {
+    padding: 5px 8px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Mobile bottom bar font chữ nhỏ gọn */
+  .mobile-nav-item span {
+    font-size: 0.65rem !important;
+  }
+
+  /* Thẻ món ăn và card */
+  .card {
+    padding: 12px !important;
+  }
+
+  .dish-card__title {
+    font-size: 0.95rem !important;
+  }
+
+  /* Nút bấm full width trong card nếu cần */
+  .btn-lg {
+    padding: 0.65rem 0.9rem !important;
+    font-size: 0.92rem !important;
+  }
+
+  /* Hero trên màn hình nhỏ 360px & 390px */
+  .hero__art-stage {
+    height: 330px !important;
+    min-height: 300px !important;
+  }
+  .hero-dish--main {
+    width: 230px !important;
+    height: 230px !important;
+  }
+  .hero-dish--tr {
+    width: 110px !important;
+    height: 110px !important;
+  }
+  .hero-dish--bl {
+    width: 105px !important;
+    height: 105px !important;
+  }
+  .hero-dish--br {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  .hero__specs-bar {
+    flex-wrap: wrap !important;
+    gap: 8px 16px !important;
+  }
+  .hero__spec-divider {
+    display: none !important;
+  }
+}
+
+/* ==================== 6B. ĐIỆN THOẠI MÀN HÌNH SIÊU NHỎ (<= 360px & 320px) ==================== */
+@media (max-width: 360px) {
+  .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .site-header__inner {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 4px !important;
+  }
+
+  .brand__logo {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .brand__name {
+    font-size: 0.88rem !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .header-actions {
+    gap: 3px !important;
+  }
+
+  .header-actions .btn-icon:not(#btn-toggle-sidebar) {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+
+  #btn-open-auth {
+    padding: 4px 6px !important;
+    font-size: 0.7rem !important;
+  }
+
+  #header-user-badge {
+    padding: 3px 6px !important;
+    font-size: 0.65rem !important;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Hero Section trên 320px */
+  .hero {
+    padding: calc(var(--space-6) + 4px) 0 var(--space-8) !important;
+  }
+
+  .hero__heading {
+    font-size: 1.65rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .hero__sub {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: var(--space-4) !important;
+  }
+
+  .hero__ctas {
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.88rem !important;
+  }
+
+  .hero__art-stage {
+    height: 270px !important;
+    min-height: 250px !important;
+    max-width: 280px !important;
+  }
+
+  .hero-dish--main {
+    width: 180px !important;
+    height: 180px !important;
+  }
+
+  .hero-dish--tr {
+    width: 85px !important;
+    height: 85px !important;
+    top: 0 !important;
+    right: 0 !important;
+  }
+
+  .hero-dish--bl {
+    width: 80px !important;
+    height: 80px !important;
+    bottom: 10px !important;
+    left: 0 !important;
+  }
+
+  .hero-dish--br {
+    width: 75px !important;
+    height: 75px !important;
+    bottom: 5px !important;
+    right: 0 !important;
+  }
+
+  .hero__badge-float {
+    display: none !important;
+  }
+
+  .hero__specs-bar {
+    gap: 8px 12px !important;
+  }
+
+  .hero__spec-val {
+    font-size: 1.05rem !important;
+  }
+
+  .hero__spec-lbl {
+    font-size: 0.62rem !important;
+  }
+
+  /* Card và danh sách món trên 320px */
+  .dish-grid {
+    gap: 12px !important;
+  }
+
+  .card {
+    padding: 10px !important;
+  }
+
+  /* Modals trên màn 320px */
+  .modal-box {
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
+  }
+
+  .modal-header {
+    padding: 10px 12px !important;
+  }
+
+  .modal-body {
+    padding: 12px !important;
+  }
+
+  .modal-footer {
+    padding: 10px 12px max(12px, env(safe-area-inset-bottom, 12px)) !important;
+    gap: 6px !important;
+  }
+
+  .modal-footer .btn {
+    min-width: 100px !important;
+    font-size: 0.85rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  /* Cart Drawer trên 320px */
+  .cart-item-card {
+    gap: 8px !important;
+  }
+
+  .cart-item-card img {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+  }
+
+  /* Toast notification */
+  .toast {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding: 0.65rem 0.85rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* ==================== 7. THIẾT BỊ DI ĐỘNG XOAY NGANG (MOBILE LANDSCAPE) ==================== */
+/* Tối ưu hóa toàn diện theo chuẩn modern-responsive cho cả max-width 932px landscape và max-height 540px */
+@media (max-width: 932px) and (orientation: landscape), (max-height: 540px) and (orientation: landscape) {
+  :root {
+    --header-height: 48px !important;
+  }
+
+  body {
+    padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .site-header {
+    height: 48px !important;
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .site-header__inner {
+    height: 48px !important;
+    padding: 0 12px !important;
+  }
+
+  .brand__logo {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .brand__name {
+    font-size: 0.92rem !important;
+  }
+
+  .hero {
+    padding: 14px 0 20px !important;
+  }
+
+  .hero__grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: var(--space-4) !important;
+    align-items: center !important;
+  }
+
+  .hero__heading {
+    font-size: 1.55rem !important;
+    margin-bottom: 6px !important;
+    line-height: 1.2 !important;
+  }
+
+  .hero__sub {
+    font-size: 0.82rem !important;
+    margin-bottom: 10px !important;
+    line-height: 1.45 !important;
+  }
+
+  .hero__ctas {
+    margin-bottom: 12px !important;
+    gap: 8px !important;
+  }
+
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    padding: 0.6rem 1.15rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  .hero__specs-bar {
+    display: none !important;
+  }
+
+  .hero__art-stage {
+    height: 230px !important;
+    min-height: 210px !important;
+    max-width: 300px !important;
+  }
+
+  .hero-dish--main {
+    width: 160px !important;
+    height: 160px !important;
+  }
+
+  .hero-dish--tr {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .hero-dish--bl {
+    width: 75px !important;
+    height: 75px !important;
+  }
+
+  .hero-dish--br {
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  .hero__badge-float {
+    display: none !important;
+  }
+
+  /* MODALS TRÊN MÀN HÌNH XOAY NGANG:
+     Bắt buộc chuyển từ Bottom Sheet sang Dialog căn giữa gọn gàng,
+     không che khuất nút bấm hay vùng nhìn thấy */
+  .modal-backdrop {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px !important;
+  }
+
+  .modal-box {
+    border-radius: var(--radius-lg) !important;
+    max-height: 94vh !important;
+    max-height: 94dvh !important;
+    max-width: min(680px, 96vw) !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+    margin: auto !important;
+    transform: none !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Ẩn Pull Handle indicator của Bottom sheet khi ở landscape */
+  .modal-box::before {
+    display: none !important;
+  }
+
+  .modal-header {
+    padding: 8px 16px !important;
+  }
+
+  .modal-body {
+    padding: 10px 16px !important;
+    max-height: calc(94dvh - 100px) !important;
+    overflow-y: auto !important;
+  }
+
+  .modal-footer {
+    padding: 8px 16px !important;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
+  }
+
+  /* Thu gọn ảnh chi tiết món khi xoay ngang */
+  .modal-box img[alt],
+  #dish-detail-modal-root img {
+    max-height: 140px !important;
+    object-fit: cover !important;
+  }
+
+  /* Mobile bottom bar thu gọn chiều cao và chỉ hiện icon để tiết kiệm diện tích */
+  .mobile-bottom-bar {
+    height: 44px !important;
+  }
+
+  .mobile-nav-item span:not(.mobile-cart-badge) {
+    display: none !important;
+  }
+
+  .mobile-nav-item {
+    padding: 4px 0 !important;
+    min-height: 40px !important;
+  }
+
+  /* Cart Drawer trên màn hình xoay ngang */
+  .cart-drawer {
+    max-width: min(440px, 100vw) !important;
+  }
+}

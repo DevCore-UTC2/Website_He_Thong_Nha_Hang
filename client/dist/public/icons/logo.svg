@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none" role="img" aria-label="Vị Nhà Mình logo">
+  <!-- Mái nhà + bát cơm bốc khói -->
+  <g transform="translate(4,6)">
+    <!-- Mái nhà -->
+    <path d="M24 22 L34 10 L44 22 Z" fill="#B5472A" stroke="#B5472A" stroke-width="0.5" stroke-linejoin="round"/>
+    <!-- Thân nhà -->
+    <rect x="27" y="22" width="14" height="10" rx="1" fill="#B5472A"/>
+    <!-- Cửa nhà -->
+    <rect x="31" y="26" width="6" height="6" rx="1" fill="#F6E3DA"/>
+    <!-- Bát cơm (nhỏ ở giữa cửa, overlay hình mái) -->
+    <ellipse cx="34" cy="20" rx="5" ry="2.5" fill="#E3A72F"/>
+    <path d="M29 20 Q34 17 39 20" fill="#FDF3D8" stroke="#E3A72F" stroke-width="0.8"/>
+    <!-- Khói bốc lên -->
+    <path d="M32 17 Q31 14 33 12" stroke="#B09880" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M34 16 Q35 13 34 11" stroke="#B09880" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M36 17 Q37 14 35 12" stroke="#B09880" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.7"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="54" y="30" font-family="'Playfair Display', Georgia, serif" font-size="18" font-weight="700" fill="#B5472A" letter-spacing="-0.3">Vị Nhà Mình</text>
+  <text x="54" y="44" font-family="'Be Vietnam Pro', system-ui, sans-serif" font-size="9" font-weight="500" fill="#6B5A4C" letter-spacing="0.8">ẨM THỰC MIỀN TÂY</text>
+</svg>

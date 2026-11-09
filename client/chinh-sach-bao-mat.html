@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Chính Sách Bảo Mật &amp; Điều Khoản Dịch Vụ — Vị Nhà Mình</title>
+  <link rel="icon" href="/public/icons/logo.png" type="image/png" />
+  <link rel="stylesheet" href="/public/fonts/fonts.css" />
+  <link rel="stylesheet" href="./src/styles/tokens.css" />
+  <link rel="stylesheet" href="./src/styles/base.css" />
+  <link rel="stylesheet" href="./src/styles/utilities.css" />
+  <link rel="stylesheet" href="./src/styles/responsive.css" />
+  <style>
+    .legal-container {
+      max-width: 800px;
+      margin: var(--space-8) auto;
+      padding: var(--space-8);
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      box-sizing: border-box;
+      width: 100%;
+    }
+    @media (max-width: 640px) {
+      .legal-container {
+        margin: var(--space-4) auto !important;
+        padding: var(--space-4) var(--space-3) !important;
+      }
+      .legal-container h1 {
+        font-size: 1.4rem !important;
+      }
+      .legal-container h2 {
+        font-size: 1.15rem !important;
+      }
+    }
+    .legal-container h1 {
+      font-family: var(--font-heading);
+      color: var(--color-primary);
+      margin-bottom: var(--space-2);
+    }
+    .legal-container h2 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      color: var(--color-primary);
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-2);
+      border-bottom: 2px solid var(--color-primary-light);
+      padding-bottom: var(--space-1);
+    }
+    .legal-container p, .legal-container li {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--color-text-main);
+      margin-bottom: var(--space-2);
+    }
+    .legal-container ul {
+      list-style: disc;
+      padding-left: var(--space-6);
+      margin-bottom: var(--space-4);
+    }
+    .badge-demo {
+      background: var(--color-accent-light);
+      color: var(--color-text-main);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div style="padding: var(--space-4) 0;">
+      <a href="/" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+        &larr; Quay lại trang chủ
+      </a>
+    </div>
+
+    <main class="legal-container">
+      <span class="badge-demo">Văn bản công khai · Tuân thủ Nghị định 13/2023/NĐ-CP</span>
+      <h1>Chính Sách Bảo Mật &amp; Điều Khoản Dịch Vụ</h1>
+      <p style="font-size: 0.85rem; color: var(--color-text-muted);">Cập nhật lần cuối: Tháng 11/2026 — Nhà hàng Vị Nhà Mình</p>
+
+      <h2 id="privacy">1. Mục đích thu thập dữ liệu cá nhân</h2>
+      <p>Nhà hàng Vị Nhà Mình cam kết tôn trọng và bảo vệ quyền riêng tư của khách hàng theo quy định của Luật An ninh mạng và Nghị định số 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân. Chúng tôi chỉ thu thập các thông tin cần thiết phục vụ:</p>
+      <ul>
+        <li>Xác nhận đặt bàn, gọi món tại bàn và điều phối phiếu bếp thời gian thực.</li>
+        <li>Tích lũy điểm thưởng thành viên và áp dụng các mã voucher khuyến mãi.</li>
+        <li>Liên hệ giao hàng hoặc xử lý yêu cầu hóa đơn tài chính của khách hàng.</li>
+        <li>Bảo mật tài khoản và ngăn chặn các hành vi gian lận truy cập.</li>
+      </ul>
+      <p><strong>Lưu trữ trên trình duyệt:</strong> Hệ thống chỉ lưu trữ mã token xác thực trong <code>localStorage</code> và trạng thái giỏ hàng tạm thời để duy trì trải nghiệm người dùng, tuyệt đối không sử dụng cookie theo dõi của bên thứ ba.</p>
+
+      <h2>2. Phạm vi và chuẩn hóa thông tin</h2>
+      <ul>
+        <li><strong>Họ và tên:</strong> Sử dụng để xưng hô lịch sự và phân biệt khách hàng trên đơn.</li>
+        <li><strong>Số điện thoại:</strong> Được chuẩn hóa theo định dạng quốc tế <code>E.164</code> (Ví dụ: <code>+84901234567</code>) để đảm bảo tính duy nhất và hỗ trợ khách quốc tế.</li>
+        <li><strong>Email &amp; Mật khẩu:</strong> Mật khẩu được mã hóa an toàn một chiều bằng thuật toán <code>bcrypt</code> với salt rounds chuẩn công nghiệp, không bao giờ lưu trữ dưới dạng văn bản thô.</li>
+        <li><strong>Dữ liệu consent:</strong> Thời điểm khách hàng nhấn "Đồng ý" được lưu trữ kèm timestamp để bảo đảm tính minh bạch pháp lý.</li>
+      </ul>
+
+      <h2>3. Quyền của chủ thể dữ liệu</h2>
+      <p>Khách hàng có toàn quyền tra cứu, cập nhật thông tin cá nhân trong trang tài khoản hoặc yêu cầu xóa dữ liệu của mình bằng cách liên hệ ban quản trị qua email: <a href="mailto:lienhe@vinhaminh.vn" style="color: var(--color-primary);">lienhe@vinhaminh.vn</a>.</p>
+
+      <h2 id="terms">4. Điều khoản dịch vụ gọi món &amp; thanh toán</h2>
+      <ul>
+        <li><strong>Giá niêm yết:</strong> Đã bao gồm thuế giá trị gia tăng (VAT 8% cho thực phẩm hoặc 10% cho đồ uống có cồn theo quy định).</li>
+        <li><strong>Món có cồn (18+):</strong> Khách hàng tự xác nhận đủ từ 18 tuổi trở lên khi gọi các sản phẩm đồ uống có cồn như Rượu đế Gò Đen.</li>
+        <li><strong>Hủy đơn &amp; Đặt bàn:</strong> Đặt bàn giữ chỗ tối đa 15 phút so với giờ hẹn trước khi bàn được chuyển giao cho khách tiếp theo nếu không có thông báo trước.</li>
+      </ul>
+
+      <h2>5. Tuyên bố đồ án học thuật (DEMO)</h2>
+      <p style="background: var(--color-surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border-left: 4px solid var(--color-warning);">
+        <em>Lưu ý:</em> Đây là website thuộc đồ án tốt nghiệp đại học phục vụ mục đích nghiên cứu và học tập. Thông tin doanh nghiệp, mã số thuế người bán là dữ liệu DEMO, không có giá trị phát hành hóa đơn thương mại thực tế.
+      </p>
+    </main>
+  </div>
+</body>
+</html>

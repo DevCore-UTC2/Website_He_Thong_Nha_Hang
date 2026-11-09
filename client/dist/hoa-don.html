@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Hóa Đơn Giá Trị Gia Tăng — Vị Nhà Mình</title>
+  <link rel="icon" type="image/png" href="/public/icons/logo.png">
+  <link rel="stylesheet" href="/src/styles/tokens.css">
+  <link rel="stylesheet" href="/src/styles/base.css">
+  <style>
+    :root {
+      --invoice-bg: #ffffff;
+      --invoice-border: #333333;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
+    .table-responsive {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 10px 8px !important;
+      }
+      .invoice-toolbar {
+        flex-direction: column !important;
+        gap: 10px !important;
+        padding: 10px 12px !important;
+        align-items: stretch !important;
+      }
+      .invoice-toolbar > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+      }
+      .invoice-toolbar .btn-group {
+        width: 100% !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+      }
+      .invoice-toolbar .btn {
+        font-size: 0.8rem !important;
+        padding: 6px 10px !important;
+        flex: 1;
+        text-align: center;
+        justify-content: center;
+      }
+      .invoice-wrapper {
+        padding: 18px 12px !important;
+        border-radius: 6px !important;
+      }
+      .invoice-title {
+        font-size: 1.15rem !important;
+      }
+      .national-motto, .national-sub {
+        font-size: 0.75rem !important;
+      }
+      .watermark-overlay {
+        font-size: 1.25rem !important;
+        padding: 6px 12px !important;
+        border-width: 3px !important;
+        letter-spacing: 2px !important;
+      }
+      .party-row {
+        flex-direction: column !important;
+        gap: 2px !important;
+        margin-bottom: 6px !important;
+      }
+      .party-label {
+        width: 100% !important;
+        font-size: 0.8rem !important;
+      }
+      .party-val {
+        font-size: 0.85rem !important;
+      }
+      .signature-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        margin-top: 20px !important;
+      }
+    }
+
+    /* Toolbar trên màn hình */
+    .invoice-toolbar {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      background: #ffffff;
+      padding: 12px 20px;
+      border-radius: var(--radius-lg, 12px);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .invoice-toolbar .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Khung hóa đơn chuẩn A4 */
+    .invoice-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      background: var(--invoice-bg);
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 36px 44px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      box-sizing: border-box;
+      transition: max-width 0.25s ease;
+    }
+
+    /* Watermark "HÓA ĐƠN DEMO – KHÔNG CÓ GIÁ TRỊ PHÁP LÝ" */
+    .watermark-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-32deg);
+      font-size: 2.75rem;
+      font-weight: 900;
+      color: rgba(181, 71, 42, 0.12); /* Mã màu gạch đất nung nhạt */
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      pointer-events: none;
+      white-space: nowrap;
+      user-select: none;
+      z-index: 10;
+      border: 6px dashed rgba(181, 71, 42, 0.16);
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    /* Tiêu đề & Quốc hiệu */
+    .invoice-header {
+      text-align: center;
+      border-bottom: 2px solid var(--color-primary, #b5472a);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .national-motto {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .national-sub {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .national-line {
+      display: inline-block;
+      width: 140px;
+      height: 1px;
+      background-color: #64748b;
+      margin-bottom: 14px;
+    }
+
+    .invoice-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--color-primary, #b5472a);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 4px 0;
+    }
+
+    .invoice-subtitle {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #64748b;
+    }
+
+    .invoice-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    /* Khối thông tin Người bán & Người mua */
+    .party-section {
+      margin-bottom: 18px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .party-title {
+      font-weight: 700;
+      color: var(--color-primary, #b5472a);
+      text-transform: uppercase;
+      font-size: 0.92rem;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    .party-row {
+      display: flex;
+      margin-bottom: 3px;
+    }
+
+    .party-label {
+      width: 170px;
+      flex-shrink: 0;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .party-val {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    /* Bảng chi tiết món ăn */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 0.85rem;
+    }
+
+    .items-table th, .items-table td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+    }
+
+    .items-table th {
+      background-color: #f8fafc;
+      font-weight: 700;
+      text-align: center;
+      color: #334155;
+    }
+
+    .items-table td.text-center { text-align: center; }
+    .items-table td.text-right { text-align: right; }
+    .items-table td.text-left { text-align: left; }
+
+    /* Bảng tổng kết thuế */
+    .tax-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.875rem;
+    }
+
+    .tax-summary-table td {
+      padding: 6px 10px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .tax-summary-table td.lbl {
+      text-align: right;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .tax-summary-table td.val {
+      text-align: right;
+      width: 160px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .grand-total-row td {
+      border-top: 2px solid var(--color-primary, #b5472a);
+      border-bottom: 2px solid var(--color-primary, #b5472a);
+      font-size: 1.05rem;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    .grand-total-row td.val {
+      color: var(--color-primary, #b5472a);
+      font-size: 1.15rem;
+    }
+
+    .amount-words-box {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      font-style: italic;
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border-left: 4px solid var(--color-primary, #b5472a);
+    }
+
+    /* Khối ký tên */
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 32px;
+      text-align: center;
+      font-size: 0.875rem;
+      page-break-inside: avoid;
+    }
+
+    .sig-role {
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .sig-note {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-bottom: 40px;
+    }
+    .sig-stamp {
+      display: inline-block;
+      border: 2px solid #16a34a;
+      color: #16a34a;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* CHẾ ĐỘ K80 (HÓA ĐƠN QUẦY MINI 80mm) */
+    .invoice-wrapper.mode-k80 {
+      max-width: 360px;
+      padding: 16px 14px;
+      font-size: 0.8rem;
+    }
+    .invoice-wrapper.mode-k80 .watermark-overlay {
+      font-size: 1.3rem;
+      padding: 6px 12px;
+    }
+    .invoice-wrapper.mode-k80 .invoice-title {
+      font-size: 1.1rem;
+    }
+    .invoice-wrapper.mode-k80 .party-label {
+      width: 100px;
+    }
+    .invoice-wrapper.mode-k80 .signature-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    /* IN ẤN @media print */
+    @media print {
+      body {
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      .invoice-toolbar {
+        display: none !important;
+      }
+      .invoice-wrapper {
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        padding: 10mm 15mm !important;
+      }
+      .watermark-overlay {
+        display: block !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Thanh công cụ điều hướng & in -->
+  <div class="invoice-toolbar">
+    <div>
+      <a href="/" class="btn btn-secondary btn-sm">← Trang chủ</a>
+      <a href="/tra-cuu-hoa-don.html" class="btn btn-outline btn-sm">🔍 Tra cứu hóa đơn</a>
+    </div>
+    <div class="btn-group">
+      <button id="btn-toggle-view" class="btn btn-secondary btn-sm" title="Chuyển đổi hiển thị khổ A4 hoặc K80">
+        📄 Khổ in: <span id="view-mode-label">A4 (Tiêu chuẩn)</span>
+      </button>
+      <button id="btn-print" class="btn btn-primary btn-sm">
+        🖨️ In Hóa Đơn / Lưu PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Vùng chứa Hóa đơn -->
+  <div id="invoice-container" class="invoice-wrapper">
+    <!-- Watermark bất di bất dịch -->
+    <div class="watermark-overlay">
+      HÓA ĐƠN DEMO – KHÔNG CÓ GIÁ TRỊ PHÁP LÝ
+    </div>
+
+    <!-- Quốc hiệu & Tiêu đề -->
+    <div class="invoice-header">
+      <div class="national-motto">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+      <div class="national-sub">Độc lập - Tự do - Hạnh phúc</div>
+      <div class="national-line"></div>
+
+      <h1 class="invoice-title">HÓA ĐƠN GIÁ TRỊ GIA TĂNG</h1>
+      <div class="invoice-subtitle">(Bản thể hiện của hóa đơn điện tử khởi tạo từ hệ thống POS Nhà hàng)</div>
+
+      <div class="invoice-meta-grid">
+        <div>
+          <div><strong>Mẫu số:</strong> <span id="inv-template">1</span></div>
+          <div><strong>Ký hiệu:</strong> <span id="inv-serial">C26MDM</span></div>
+        </div>
+        <div style="text-align: right;">
+          <div><strong>Số hóa đơn:</strong> <span id="inv-number" style="font-size: 1.15rem; font-weight: 800; color: var(--color-primary, #b5472a);">00000000</span></div>
+          <div><strong>Ngày lập:</strong> <span id="inv-date">--/--/----</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thông tin Người bán -->
+    <div class="party-section">
+      <div class="party-title">Đơn vị bán hàng (Seller)</div>
+      <div class="party-row">
+        <span class="party-label">Tên đơn vị:</span>
+        <span class="party-val" id="seller-name">NHÀ HÀNG VỊ NHÀ MÌNH (DEMO)</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Mã số thuế:</span>
+        <span class="party-val" id="seller-tax-id">0000000000 (DEMO)</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Địa chỉ:</span>
+        <span class="party-val" id="seller-address">450 Lê Văn Việt, Phường Tăng Nhơn Phú, TP. Thủ Đức, TP. Hồ Chí Minh</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Điện thoại / Email:</span>
+        <span class="party-val" id="seller-contact">0900 000 000 — lienhe@vinhaminh.vn</span>
+      </div>
+    </div>
+
+    <!-- Thông tin Người mua -->
+    <div class="party-section">
+      <div class="party-title">Người mua hàng (Buyer)</div>
+      <div class="party-row">
+        <span class="party-label">Họ tên người mua:</span>
+        <span class="party-val" id="buyer-name">Khách hàng vãng lai</span>
+      </div>
+      <div class="party-row" id="row-buyer-company" style="display: none;">
+        <span class="party-label">Tên đơn vị:</span>
+        <span class="party-val" id="buyer-company-name">---</span>
+      </div>
+      <div class="party-row" id="row-buyer-tax" style="display: none;">
+        <span class="party-label">Mã số thuế:</span>
+        <span class="party-val" id="buyer-tax-id">---</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Địa chỉ:</span>
+        <span class="party-val" id="buyer-address">Tại nhà hàng</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Hình thức TT:</span>
+        <span class="party-val" id="buyer-payment">Tiền mặt / Chuyển khoản</span>
+      </div>
+      <div class="party-row">
+        <span class="party-label">Mã đơn hàng:</span>
+        <span class="party-val" id="buyer-order-code" style="font-weight: 700; color: var(--color-primary, #b5472a);">ORD-0000</span>
+      </div>
+    </div>
+
+    <!-- Bảng danh sách hàng hóa -->
+    <div class="table-responsive">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th style="width: 38px;">STT</th>
+            <th>Tên hàng hóa, dịch vụ</th>
+            <th style="width: 50px;">ĐVT</th>
+            <th style="width: 55px;">SL</th>
+            <th style="width: 105px;">Đơn giá<br><small>(Đã VAT)</small></th>
+            <th style="width: 105px;">Chưa thuế</th>
+            <th style="width: 65px;">Thuế suất</th>
+            <th style="width: 95px;">Tiền VAT</th>
+            <th style="width: 110px;">Thành tiền<br><small>(Đã VAT)</small></th>
+          </tr>
+        </thead>
+        <tbody id="invoice-items-body">
+          <tr>
+            <td colspan="9" class="text-center" style="padding: 24px; color: #64748b;">Đang tải chi tiết hóa đơn...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bảng tổng kết thuế VAT -->
+    <div class="table-responsive">
+      <table class="tax-summary-table">
+        <tr>
+          <td class="lbl">Tổng tiền chưa thuế:</td>
+          <td class="val" id="sum-before-vat">0 đ</td>
+        </tr>
+        <tr id="row-vat-8">
+          <td class="lbl">Tiền thuế GTGT (VAT 8% - Thực phẩm, nước ngọt):</td>
+          <td class="val" id="sum-vat-8">0 đ</td>
+        </tr>
+        <tr id="row-vat-10">
+          <td class="lbl">Tiền thuế GTGT (VAT 10% - Đồ uống có cồn):</td>
+          <td class="val" id="sum-vat-10">0 đ</td>
+        </tr>
+        <tr>
+          <td class="lbl">Tổng cộng tiền thuế GTGT:</td>
+          <td class="val" id="sum-total-vat">0 đ</td>
+        </tr>
+        <tr id="row-discount" style="display: none;">
+          <td class="lbl" style="color: #16a34a;">Giảm giá Voucher:</td>
+          <td class="val" id="sum-discount" style="color: #16a34a;">0 đ</td>
+        </tr>
+        <tr class="grand-total-row">
+          <td class="lbl">TỔNG CỘNG TIỀN THANH TOÁN (ĐÃ CÓ THUẾ):</td>
+          <td class="val" id="sum-grand-total">0 đ</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Số tiền viết bằng chữ -->
+    <div class="amount-words-box">
+      <strong>Số tiền viết bằng chữ:</strong> <span id="sum-in-words">Không đồng</span>
+    </div>
+
+    <!-- Chữ ký điện tử -->
+    <div class="signature-grid">
+      <div>
+        <div class="sig-role">Người mua hàng</div>
+        <div class="sig-note">(Ký, ghi rõ họ tên nếu có)</div>
+        <div style="font-weight: 600; color: #64748b;" id="sig-buyer-name">Khách hàng xác nhận</div>
+      </div>
+      <div>
+        <div class="sig-role">Người bán hàng</div>
+        <div class="sig-note">(Ký điện tử bởi tổ chức)</div>
+        <div class="sig-stamp">
+          ✓ ĐÃ KÝ ĐIỆN TỬ<br>
+          <span style="font-size: 0.65rem;" id="sig-seller-stamp">VỊ NHÀ MÌNH (DEMO)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { formatCurrency } from '/src/utils/format.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderCode = urlParams.get('code') || urlParams.get('order_code') || '';
+    let phoneParam = urlParams.get('phone') || urlParams.get('phone_last4') || '';
+
+    // Lấy token và số điện thoại đã lưu trong phiên nếu có
+    const token = localStorage.getItem('vnm_token') || localStorage.getItem('vinhaminh_token') || localStorage.getItem('smartbite_token');
+    if (!phoneParam) {
+      try {
+        const savedUser = JSON.parse(localStorage.getItem('vnm_user') || localStorage.getItem('vinhaminh_user') || '{}');
+        if (savedUser && savedUser.phone) phoneParam = savedUser.phone;
+      } catch (_) {}
+    }
+    if (!phoneParam) {
+      phoneParam = localStorage.getItem('vnm_last_order_phone') || '';
+    }
+
+    const container = document.getElementById('invoice-container');
+    const btnPrint = document.getElementById('btn-print');
+    const btnToggleView = document.getElementById('btn-toggle-view');
+    const viewModeLabel = document.getElementById('view-mode-label');
+
+    let isK80 = false;
+    btnToggleView.addEventListener('click', () => {
+      isK80 = !isK80;
+      if (isK80) {
+        container.classList.add('mode-k80');
+        viewModeLabel.textContent = 'K80 (Hóa đơn quầy)';
+      } else {
+        container.classList.remove('mode-k80');
+        viewModeLabel.textContent = 'A4 (Tiêu chuẩn)';
+      }
+    });
+
+    btnPrint.addEventListener('click', () => {
+      window.print();
+    });
+
+    async function loadInvoice(overridePhone) {
+      if (!orderCode) {
+        document.getElementById('invoice-items-body').innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center" style="padding: 30px; color: #dc2626; font-weight: 600;">
+              ⚠️ Thiếu mã đơn hàng trên đường dẫn (ví dụ: ?code=ORD-1234). Vui lòng sử dụng tính năng <a href="/tra-cuu-hoa-don.html">Tra cứu hóa đơn</a>.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const effectivePhone = (overridePhone !== undefined) ? overridePhone : phoneParam;
+
+      try {
+        const headers = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        if (effectivePhone) {
+          headers['X-Customer-Phone'] = effectivePhone;
+        }
+
+        const queryStr = effectivePhone ? `?phone=${encodeURIComponent(effectivePhone)}` : '';
+        const res = await fetch(`/api/invoices/by-order/${encodeURIComponent(orderCode)}${queryStr}`, { headers });
+        const json = await res.json();
+
+        if (!json.success || !json.data) {
+          throw new Error(json.message || 'Không tìm thấy hóa đơn.');
+        }
+
+        const inv = json.data;
+        renderInvoice(inv);
+      } catch (err) {
+        document.getElementById('invoice-items-body').innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center" style="padding: 30px; color: #dc2626;">
+              <div style="max-width: 480px; margin: 0 auto; text-align: center;">
+                <div style="font-size: 1.05rem; font-weight: 700; margin-bottom: 8px;">⚠️ Lỗi khi tải hóa đơn</div>
+                <p style="margin: 0 0 16px 0; font-size: 0.9rem; color: #64748b; line-height: 1.5;">${err.message}</p>
+                <div style="display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                  <input
+                    type="text"
+                    id="input-verify-phone"
+                    placeholder="Nhập SĐT hoặc 4 số cuối"
+                    class="input"
+                    value="${effectivePhone || ''}"
+                    style="padding: 8px 12px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; width: 210px; box-sizing: border-box;"
+                  />
+                  <button
+                    type="button"
+                    id="btn-verify-phone-submit"
+                    class="btn btn-primary"
+                    style="padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 0.9rem;"
+                  >
+                    Xác thực
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+
+        const verifyBtn = document.getElementById('btn-verify-phone-submit');
+        const verifyInput = document.getElementById('input-verify-phone');
+        if (verifyBtn && verifyInput) {
+          verifyBtn.addEventListener('click', () => {
+            const entered = verifyInput.value.trim();
+            if (entered) loadInvoice(entered);
+          });
+          verifyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              const entered = verifyInput.value.trim();
+              if (entered) loadInvoice(entered);
+            }
+          });
+        }
+      }
+    }
+
+    function renderInvoice(inv) {
+      document.title = `Hóa Đơn ${inv.formatted_number || inv.invoice_number} — ${inv.order_code}`;
+
+      document.getElementById('inv-template').textContent = inv.template_code || '1';
+      document.getElementById('inv-serial').textContent = inv.serial_code || 'C26MDM';
+      document.getElementById('inv-number').textContent = inv.formatted_number || String(inv.invoice_number).padStart(8, '0');
+      
+      const issuedDate = inv.issued_at ? new Date(inv.issued_at) : new Date();
+      document.getElementById('inv-date').textContent = `${issuedDate.getDate().toString().padStart(2, '0')}/${(issuedDate.getMonth() + 1).toString().padStart(2, '0')}/${issuedDate.getFullYear()} ${issuedDate.getHours().toString().padStart(2, '0')}:${issuedDate.getMinutes().toString().padStart(2, '0')}`;
+
+      // Người bán
+      document.getElementById('seller-name').textContent = inv.seller_name || 'NHÀ HÀNG VỊ NHÀ MÌNH (DEMO)';
+      document.getElementById('seller-tax-id').textContent = inv.seller_tax_id ? `${inv.seller_tax_id} (DEMO)` : '0000000000 (DEMO)';
+      document.getElementById('seller-address').textContent = inv.seller_address || '';
+      document.getElementById('seller-contact').textContent = `${inv.seller_phone || ''} — ${inv.seller_email || ''}`;
+
+      // Người mua
+      document.getElementById('buyer-name').textContent = inv.buyer_name || 'Khách hàng';
+      if (inv.buyer_company_name) {
+        document.getElementById('row-buyer-company').style.display = 'flex';
+        document.getElementById('buyer-company-name').textContent = inv.buyer_company_name;
+      }
+      if (inv.buyer_tax_id) {
+        document.getElementById('row-buyer-tax').style.display = 'flex';
+        document.getElementById('buyer-tax-id').textContent = inv.buyer_tax_id;
+      }
+      document.getElementById('buyer-address').textContent = inv.buyer_address || 'Tại nhà hàng';
+      
+      const payMap = {
+        'cash': 'Tiền mặt',
+        'qr_pay': 'Chuyển khoản (VietQR Sandbox)',
+        'sandbox_card': 'Thẻ ngân hàng / Ví điện tử giả lập'
+      };
+      document.getElementById('buyer-payment').textContent = payMap[inv.payment_method] || inv.payment_method || 'Tiền mặt';
+      document.getElementById('buyer-order-code').textContent = inv.order_code;
+
+      // Danh sách món ăn
+      const tbody = document.getElementById('invoice-items-body');
+      const items = inv.items || [];
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center">Không có món ăn trong đơn hàng.</td></tr>`;
+      } else {
+        tbody.innerHTML = items.map((it, idx) => {
+          const vatPct = `${Math.round((it.vat_rate || 0.08) * 100)}%`;
+          const netItemTotal = it.item_total - (it.discount_allocated || 0);
+
+          return `
+            <tr>
+              <td class="text-center">${idx + 1}</td>
+              <td class="text-left font-medium">
+                ${it.dish_name}
+                ${it.vat_category === 'alcohol' ? '<span style="font-size: 0.725rem; color: #b5472a; margin-left: 4px;">(Đồ uống có cồn)</span>' : ''}
+              </td>
+              <td class="text-center">Phần</td>
+              <td class="text-center">${it.quantity}</td>
+              <td class="text-right">${formatCurrency(it.unit_price)}</td>
+              <td class="text-right">${formatCurrency(it.amount_before_vat)}</td>
+              <td class="text-center" style="font-weight: 600;">${vatPct}</td>
+              <td class="text-right">${formatCurrency(it.vat_amount)}</td>
+              <td class="text-right" style="font-weight: 700;">${formatCurrency(netItemTotal)}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Tổng kết
+      document.getElementById('sum-before-vat').textContent = formatCurrency(inv.total_before_vat);
+      document.getElementById('sum-vat-8').textContent = formatCurrency(inv.vat_8_amount);
+      document.getElementById('sum-vat-10').textContent = formatCurrency(inv.vat_10_amount);
+      document.getElementById('sum-total-vat').textContent = formatCurrency(inv.total_vat);
+
+      if (inv.discount_amount && inv.discount_amount > 0) {
+        document.getElementById('row-discount').style.display = 'table-row';
+        document.getElementById('sum-discount').textContent = `-${formatCurrency(inv.discount_amount)}`;
+      }
+
+      document.getElementById('sum-grand-total').textContent = formatCurrency(inv.total_amount);
+      document.getElementById('sum-in-words').textContent = inv.total_amount_in_words || '---';
+
+      // Chữ ký
+      document.getElementById('sig-buyer-name').textContent = inv.buyer_name || 'Khách hàng xác nhận';
+      document.getElementById('sig-seller-stamp').textContent = `${inv.seller_name || 'VỊ NHÀ MÌNH DEMO'} (${issuedDate.toLocaleDateString('vi-VN')})`;
+    }
+
+    loadInvoice();
+  </script>
+</body>
+</html>
