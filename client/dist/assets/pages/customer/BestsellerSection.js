@@ -193,7 +193,7 @@ export function renderBestsellerGrid() {
         class="btn btn-hero-primary btn-lg" 
         style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 0.9rem 2.2rem; font-size: 1.05rem; font-weight: 700; box-shadow: var(--shadow-md); border-radius: var(--radius-full);"
       >
-        <span>Xem Toàn Bộ Thực Đơn (Hơn 90 Món Đặc Sản)</span>
+        <span>Xem Toàn Bộ Thực Đơn </span>
         <span aria-hidden="true" style="font-size: 1.2rem;">&rarr;</span>
       </a>
     </div>
