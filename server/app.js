@@ -118,7 +118,7 @@ app.use(express.urlencoded({ extended: true }));
 // Giới hạn tần suất gọi API (Rate Limiting)
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 300,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
